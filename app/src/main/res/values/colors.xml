@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default colors -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- App specific colors -->
+    <color name="inviro_blue">#0F3C7D</color>
+    <color name="dark_blue">#032884</color>
+    <color name="critical_red">#FF3B30</color>
+    <color name="warning_yellow">#FFCC00</color>
+    <color name="success_green">#34C759</color>
+    <color name="light_gray">#F2F2F7</color>
+    <color name="medium_gray">#C7C7CC</color>
+    <color name="text_primary">#1C1C1E</color>
+    <color name="text_secondary">#8E8E93</color>
+</resources>
