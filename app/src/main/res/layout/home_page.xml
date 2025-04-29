@@ -8,7 +8,7 @@
     android:background="@color/dark_blue"
     tools:context=".MainActivity">
 
-    <!-- App Header -->
+    <!--BANANA BERRY ENAK BET CUYY-->
 
     <LinearLayout
         android:id="@+id/header_layout"
