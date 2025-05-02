@@ -19,4 +19,11 @@
     <color name="medium_gray">#C7C7CC</color>
     <color name="text_primary">#1C1C1E</color>
     <color name="text_secondary">#8E8E93</color>
+
+    <!--    Color Palette-->
+    <color name="main_green">#99BC85</color>
+    <color name="light_green">#E4EFE7</color>
+    <color name="main_cream">#FAF1E6</color>
+    <color name="light_cream">#FDFAF6</color>
+
 </resources>
