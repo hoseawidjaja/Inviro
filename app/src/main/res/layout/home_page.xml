@@ -5,7 +5,7 @@
     android:id="@+id/startButton"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_blue"
+    android:background="@color/main_green"
     tools:context=".MainActivity">
 
     <!-- App Header -->
@@ -29,7 +29,7 @@
             android:layout_height="40dp"
             android:layout_weight="1"
             android:text="Inviro."
-            android:textColor="@color/white"
+            android:textColor="@color/light_cream"
             android:textSize="30sp"
             android:textStyle="bold"
             android:gravity="start|center_vertical" />
@@ -165,7 +165,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="4dp"
                             android:layout_weight="1"
-                            app:cardBackgroundColor="@color/dark_blue"
+                            app:cardBackgroundColor="@color/main_green"
                             app:cardCornerRadius="6dp">
 
                             <LinearLayout
@@ -178,7 +178,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Items sold"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/light_cream"
                                     android:textSize="12sp" />
 
                                 <TextView
@@ -186,7 +186,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="50"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/light_cream"
                                     android:textSize="20sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
@@ -199,7 +199,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="4dp"
                             android:layout_weight="2"
-                            app:cardBackgroundColor="@color/dark_blue"
+                            app:cardBackgroundColor="@color/main_green"
                             app:cardCornerRadius="6dp">
 
                             <LinearLayout
@@ -213,7 +213,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Today's Revenue"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/light_cream"
                                     android:textSize="12sp" />
 
                                 <TextView
@@ -221,7 +221,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Rp 1.500.000,00"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/light_cream"
                                     android:textSize="20sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
@@ -385,7 +385,7 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_marginTop="-15dp"
-        android:background="@color/dark_blue"
+        android:background="@color/main_green"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -426,7 +426,7 @@
                 android:layout_width="50dp"
                 android:layout_height="4dp"
                 android:layout_marginTop="3dp"
-                android:background="@color/teal_200" />
+                android:background="@color/light_green" />
         </LinearLayout>
 
         <ImageView
