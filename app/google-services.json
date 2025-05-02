@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "631841342002",
+    "project_id": "inviro-42b90",
+    "storage_bucket": "inviro-42b90.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631841342002:android:5045e51d77e488291d722b",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsI0JoNss8kV3_OkyF5EfWmQLnDjyyAj4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
