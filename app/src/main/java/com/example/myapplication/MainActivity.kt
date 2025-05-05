@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
@@ -7,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.myapplication.Activity.ReportActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -36,6 +38,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_report -> {
                     Toast.makeText(this, "Report Clicked", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, ReportActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.nav_stock -> {
