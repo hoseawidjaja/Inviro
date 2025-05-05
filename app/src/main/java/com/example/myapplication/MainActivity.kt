@@ -34,6 +34,18 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Profile Clicked", Toast.LENGTH_SHORT).show()
                     true
                 }
+                R.id.nav_report -> {
+                    Toast.makeText(this, "Report Clicked", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.nav_stock -> {
+                    Toast.makeText(this, "Stock Clicked", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.nav_menu -> {
+                    Toast.makeText(this, "Menu Clicked", Toast.LENGTH_SHORT).show()
+                    true
+                }
                 else -> false
             }
         }
