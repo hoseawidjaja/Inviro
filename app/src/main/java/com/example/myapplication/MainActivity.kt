@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -20,6 +21,8 @@ class MainActivity : AppCompatActivity() {
 //        }
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.navigs)
+        bottomNav.setBackgroundColor(Color.TRANSPARENT)
+        bottomNav.elevation = 0f
 
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
