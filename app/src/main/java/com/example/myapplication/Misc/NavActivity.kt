@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.Misc
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,8 +7,10 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myapplication.Activity.HomeActivity
-import com.example.myapplication.Activity.ReportActivity
+import com.example.myapplication.MainActivity.HomeActivity
+import com.example.myapplication.MainActivity.NotificationActivity
+import com.example.myapplication.MainActivity.ReportActivity
+import com.example.myapplication.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 open class NavActivity : AppCompatActivity() {

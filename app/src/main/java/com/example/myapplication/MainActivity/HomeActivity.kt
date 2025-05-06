@@ -1,15 +1,12 @@
-package com.example.myapplication.Activity
+package com.example.myapplication.MainActivity
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import com.example.myapplication.NavActivity
+import com.example.myapplication.Misc.NavActivity
 import com.example.myapplication.R
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : NavActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,8 +19,14 @@ class HomeActivity : NavActivity() {
 //            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
 //            insets
 //        }
+        gotoNotifs()
+    }
 
-
-
+    fun gotoNotifs(){
+        val notifs = findViewById<ImageView>(R.id.notification_bell)
+        notifs.setOnClickListener {
+            startActivity(Intent(this, NotificationActivity::class.java))
+            finish()
+        }
     }
 }
