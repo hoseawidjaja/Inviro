@@ -122,30 +122,19 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <LinearLayout
+                        <include
+                            layout="@layout/notification_block"
+                            android:id="@+id/header_include"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
                             android:layout_marginTop="4dp"
                             android:background="@color/main_green"
                             android:padding="12dp"
-                            app:layout_constraintTop_toBottomOf="@id/staff_label">
+                            app:layout_constraintTop_toBottomOf="@id/staff_label"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent" />
 
-<!--                            <ImageView-->
-<!--                                android:layout_width="40dp"-->
-<!--                                android:layout_height="40dp"-->
-<!--                                android:src="@drawable/ic_person"-->
-<!--                                android:layout_marginEnd="12dp"-->
-<!--                                android:padding="4dp"-->
-<!--                                android:background="@drawable/circle_white_bg" />-->
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eget velit purus. Fusce a interdum eros, sit amet sagittis ex."
-                                android:textSize="14sp"
-                                android:textColor="@color/white" />
-                        </LinearLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <!-- System Notification 2 -->
