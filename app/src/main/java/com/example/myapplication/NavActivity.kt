@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.Activity.HomeActivity
 import com.example.myapplication.Activity.ReportActivity
@@ -13,7 +15,7 @@ open class NavActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.nav_main)  // This must match your layout file
+        setContentView(R.layout.activity_nav)  // This must match your layout file
 
         // Print or log when the navigation is created
         println(">> NavActivity created")
@@ -54,6 +56,20 @@ open class NavActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        val appTitle = findViewById<TextView>(R.id.app_title)
+        appTitle.setOnClickListener {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+        }
+
+        val profile = findViewById<ImageView>(R.id.profile_button)
+        //TODO: ini dijadiin profile pas menunya udah ada
+        profile.setOnClickListener {
+            startActivity(Intent(this, ReportActivity::class.java))
+            finish()
+        }
+
 
         // Set the selected item based on the current activity
         val currentItem = when (this) {

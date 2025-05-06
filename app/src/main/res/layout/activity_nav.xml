@@ -6,12 +6,22 @@
     android:layout_height="match_parent"
     android:background="@color/main_green">
 
+    <include
+        layout="@layout/header_main"
+        android:id="@+id/header_include"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/contentFrame"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- Child screen content will be inserted here -->
     <FrameLayout
         android:id="@+id/contentFrame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:layout_marginTop="12dp"/>
 
     <!-- Include the existing nav layout -->
     <include

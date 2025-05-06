@@ -10,48 +10,16 @@
 
     <!-- App Header -->
 
-    <LinearLayout
-        android:id="@+id/header_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="35dp"
-        android:layout_marginEnd="20dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/app_title"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:gravity="start|center_vertical"
-            android:text="Inviro."
-            android:textColor="@color/light_cream"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/profile_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/circle_background" />
-    </LinearLayout>
-
     <!-- Main Content Card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/main_content_card"
         android:layout_width="383dp"
         android:layout_height="725dp"
-        android:layout_marginTop="10dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_layout">
+        tools:layout_editor_absoluteY="85dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

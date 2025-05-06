@@ -5,53 +5,21 @@
     android:id="@+id/sales_detail_button"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_blue"
+    android:background="@color/main_green"
     tools:context=".Activity.HomeActivity">
 
     <!-- App Header -->
-    <LinearLayout
-        android:id="@+id/header_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/app_title"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="Inviro."
-            android:textColor="@color/white"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:gravity="start|center_vertical" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/profile_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/circle_background" />
-    </LinearLayout>
 
     <!-- Main Content Card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/main_content_card"
         android:layout_width="383dp"
         android:layout_height="700dp"
-        android:layout_margin="0dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_layout">
+        tools:layout_editor_absoluteY="85dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -79,10 +47,10 @@
                     android:id="@+id/export_button"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:backgroundTint="@color/inviro_blue"
+                    android:backgroundTint="@color/main_green"
                     android:text="Export"
                     android:textAllCaps="false"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/light_cream" />
             </LinearLayout>
 
             <!-- Date Range Selection -->
@@ -97,9 +65,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="from"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="8dp" />
+                    android:layout_marginEnd="8dp"
+                    android:text="from" />
 
                 <!--                <Button-->
                 <!--                    android:id="@+id/date_from_button"-->
@@ -116,9 +84,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="to"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="8dp" />
+                    android:layout_marginEnd="8dp"
+                    android:text="to" />
 
                 <!--                <Button-->
                 <!--                    android:id="@+id/date_to_button"-->
@@ -151,10 +119,10 @@
                         android:id="@+id/statistics_tab"
                         android:layout_width="100dp"
                         android:layout_height="36dp"
-                        android:text="Statistics"
-                        android:textColor="@color/white"
-                        android:backgroundTint="@color/inviro_blue"
                         android:layout_margin="8dp"
+                        android:backgroundTint="@color/main_green"
+                        android:text="Statistics"
+                        android:textColor="@color/light_cream"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -164,12 +132,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_marginTop="8dp"
-                        android:src="@drawable/chart_image"
-                        android:scaleType="fitXY"
                         android:contentDescription="Sales chart"
-                        app:layout_constraintTop_toBottomOf="@id/statistics_tab"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/chart_image"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@id/statistics_tab" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -189,21 +157,21 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="@color/dark_blue"
+                    app:cardBackgroundColor="@color/main_green"
                     app:cardCornerRadius="6dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
+                        android:padding="16dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Items sold"
-                            android:textColor="@color/white"
+                            android:textColor="@color/light_cream"
                             android:textSize="14sp" />
 
                         <TextView
@@ -211,7 +179,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="50"
-                            android:textColor="@color/white"
+                            android:textColor="@color/light_cream"
                             android:textSize="24sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -223,21 +191,21 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    app:cardBackgroundColor="@color/dark_blue"
+                    app:cardBackgroundColor="@color/main_green"
                     app:cardCornerRadius="6dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="16dp"
-                        android:gravity="center">
+                        android:padding="16dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Revenue"
-                            android:textColor="@color/white"
+                            android:textColor="@color/light_cream"
                             android:textSize="14sp" />
 
                         <TextView
@@ -245,7 +213,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Rp 1.500.000,00"
-                            android:textColor="@color/white"
+                            android:textColor="@color/light_cream"
                             android:textSize="24sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -268,31 +236,31 @@
                 android:id="@+id/best_selling_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginTop="12dp"
+                android:orientation="vertical"
                 app:layout_constraintTop_toBottomOf="@id/top_selling_title">
 
                 <!-- Item 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/main_green"
                     android:gravity="center_vertical"
-                    android:background="@color/dark_blue"
-                    android:padding="12dp"
-                    android:layout_marginBottom="8dp">
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/circle_background"
-                        android:layout_marginEnd="12dp" />
+                        android:layout_marginEnd="12dp"
+                        android:src="@drawable/circle_background" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Banana Berries"
-                        android:textColor="@color/white"
+                        android:textColor="@color/light_cream"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -300,23 +268,23 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/main_green"
                     android:gravity="center_vertical"
-                    android:background="@color/dark_blue"
-                    android:padding="12dp"
-                    android:layout_marginBottom="8dp">
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/circle_background"
-                        android:layout_marginEnd="12dp" />
+                        android:layout_marginEnd="12dp"
+                        android:src="@drawable/circle_background" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Banana Berries"
-                        android:textColor="@color/white"
+                        android:textColor="@color/light_cream"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -325,23 +293,23 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/main_green"
                     android:gravity="center_vertical"
-                    android:background="@color/dark_blue"
-                    android:padding="12dp"
-                    android:layout_marginBottom="8dp">
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/circle_background"
-                        android:layout_marginEnd="12dp" />
+                        android:layout_marginEnd="12dp"
+                        android:src="@drawable/circle_background" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Avocado Toast"
-                        android:textColor="@color/white"
+                        android:textColor="@color/light_cream"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -349,23 +317,23 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/main_green"
                     android:gravity="center_vertical"
-                    android:background="@color/dark_blue"
-                    android:padding="12dp"
-                    android:layout_marginBottom="8dp">
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/circle_background"
-                        android:layout_marginEnd="12dp" />
+                        android:layout_marginEnd="12dp"
+                        android:src="@drawable/circle_background" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Mango Smoothie"
-                        android:textColor="@color/white"
+                        android:textColor="@color/light_cream"
                         android:textSize="16sp" />
                 </LinearLayout>
 
@@ -373,22 +341,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:background="@color/main_green"
                     android:gravity="center_vertical"
-                    android:background="@color/dark_blue"
+                    android:orientation="horizontal"
                     android:padding="12dp">
 
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/circle_background"
-                        android:layout_marginEnd="12dp" />
+                        android:layout_marginEnd="12dp"
+                        android:src="@drawable/circle_background" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Green Tea Latte"
-                        android:textColor="@color/white"
+                        android:textColor="@color/light_cream"
                         android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -397,70 +365,5 @@
     </androidx.cardview.widget.CardView>
 
     <!-- Bottom Navigation -->
-    <LinearLayout
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_marginTop="-15dp"
-        android:background="@color/dark_blue"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_content_card">
-
-        <ImageView
-            android:id="@+id/nav_grid"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:contentDescription="Grid icon"
-            android:src="@drawable/ic_grid" />
-
-        <ImageView
-            android:id="@+id/nav_list"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:contentDescription="List icon"
-            android:src="@drawable/ic_document" />
-
-        <ImageView
-            android:id="@+id/nav_home"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:contentDescription="PHome icon"
-            android:src="@drawable/ic_home" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/nav_chart"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:contentDescription="Chart icon"
-                android:src="@drawable/ic_chart" />
-
-            <View
-                android:id="@+id/nav_indicator"
-                android:layout_width="50dp"
-                android:layout_height="4dp"
-                android:layout_marginTop="3dp"
-                android:background="@color/teal_200" />
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/nav_people"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:contentDescription="People icon"
-            android:src="@drawable/ic_people" />
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
