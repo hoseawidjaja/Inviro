@@ -115,29 +115,46 @@
                     android:layout_height="wrap_content">
 
                     <!-- Tab/Statistics Button -->
-                    <Button
-                        android:id="@+id/statistics_tab"
-                        android:layout_width="100dp"
-                        android:layout_height="36dp"
-                        android:layout_margin="8dp"
-                        android:backgroundTint="@color/main_green"
-                        android:text="Statistics"
-                        android:textColor="@color/light_cream"
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tab_layout"
+                        android:layout_width="84dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="3.5dp"
+                        android:background="@drawable/statistics_tab"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tabIndicatorHeight="0dp"
+                        app:tabTextColor="@android:color/white">
 
-                    <!-- Chart Image -->
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Statistics" />
+                    </com.google.android.material.tabs.TabLayout>
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@+id/chartImage"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/chartImage" />
+
                     <ImageView
-                        android:id="@+id/sales_chart"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:layout_marginTop="8dp"
-                        android:contentDescription="Sales chart"
-                        android:scaleType="fitXY"
+                        android:id="@+id/chartImage"
+                        android:layout_width="342dp"
+                        android:layout_height="205dp"
+
+                        android:layout_marginTop="24dp"
+                        android:background="@drawable/image_frame"
+                        android:contentDescription="Sales Chart"
+                        android:padding="2dp"
                         android:src="@drawable/chart_image"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/statistics_tab" />
+                        app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
