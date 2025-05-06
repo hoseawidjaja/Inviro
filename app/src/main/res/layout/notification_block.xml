@@ -8,52 +8,77 @@
     android:background="@color/main_green"
     tools:context=".Activity.HomeActivity">
 
-    <LinearLayout
+    <!-- Background Frame with rounded corners -->
+    <FrameLayout
         android:layout_width="387dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="216dp"
-        android:background="@android:color/white"
-        android:orientation="horizontal"
+        android:layout_height="120dp"
+        android:background="@drawable/rounded_background_white"
         android:padding="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="12dp"
-            android:padding="4dp"
-            android:src="@drawable/circle_red" />
-
+        <!-- Horizontal content layout -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/system_label_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="System"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+            <!-- Profile picture -->
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="Profile Picture"
+                android:padding="4dp"
+                android:src="@drawable/ic_profile" />
 
-            <TextView
-                android:layout_width="match_parent"
+            <!-- Text content with line separator -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eget velit purus. Fusce a interdum eros, sit amet sagittis ex."
-                android:textColor="@color/black"
-                android:textSize="14sp" />
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/name_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:text="System"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <!-- Divider line -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="4dp"
+                    android:layout_marginTop="2dp"
+                    android:background="@android:color/darker_gray" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="53dp"
+                    android:layout_marginTop="3dp"
+                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eget velit purus. Fusce a interdum eros, sit amet sagittis ex."
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </LinearLayout>
         </LinearLayout>
 
+        <!-- Delete icon in top-right -->
         <ImageButton
-            android:id="@+id/delete_notification_3"
+            android:id="@+id/delete_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="2dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_delete" />
-    </LinearLayout>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
