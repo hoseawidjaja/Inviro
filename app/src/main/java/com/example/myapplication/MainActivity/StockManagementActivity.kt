@@ -2,6 +2,9 @@ package com.example.myapplication.MainActivity
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.ItemsActivity.StockActivity
@@ -15,22 +18,39 @@ class StockManagementActivity : NavActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: StockAdapter
     private val stockList = mutableListOf<StockModel>()
+    private lateinit var addButton: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.stock_page)
 
+        // RecyclerView setup
         recyclerView = findViewById(R.id.views)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        adapter = StockAdapter(stockList) { selectedItem ->
+        // Initialize the adapter with click listener
+        adapter = StockAdapter(stockList) { selectedStock ->
             val intent = Intent(this, StockActivity::class.java)
-            intent.putExtra("stock_data", selectedItem)
+            intent.putExtra("stock_id", selectedStock.id)
+            intent.putExtra("stock_title", selectedStock.title)
+            intent.putExtra("stock_quantity", selectedStock.quantity)
+            startActivity(intent)
+        }
+        recyclerView.adapter = adapter
+
+        // Setup the (+) button for adding a new stock item
+        addButton = findViewById(R.id.addStockButton)
+        // Starting StockActivity with the stock data (id, title, and quantity)
+        addButton.setOnClickListener {
+            val intent = Intent(this, StockActivity::class.java)
+            intent.putExtra("stock_id", -1)  // Indicate it's a new item (no ID assigned yet)
+            intent.putExtra("stock_title", "") // Empty title for new item
+            intent.putExtra("stock_quantity", 0) // Set quantity to 0 for new item
             startActivity(intent)
         }
 
-        recyclerView.adapter = adapter
 
+        // Fetch data from Firebase
         val databaseRef = FirebaseDatabase.getInstance().getReference("Stock_List")
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -39,7 +59,7 @@ class StockManagementActivity : NavActivity() {
                     val item = itemSnapshot.getValue(StockModel::class.java)
                     item?.let { stockList.add(it) }
                 }
-                adapter.notifyDataSetChanged()
+                adapter.setItems(stockList)  // Update RecyclerView with the new data
             }
 
             override fun onCancelled(error: DatabaseError) {
