@@ -17,7 +17,7 @@ class MenuManagementActivity : NavActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_menu)
+        setContentView(R.layout.menu_page)
 
         recyclerView = findViewById(R.id.views)
         recyclerView.layoutManager = LinearLayoutManager(this)

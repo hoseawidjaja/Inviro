@@ -9,7 +9,10 @@ import com.example.myapplication.ViewModels.StockModel
 import com.example.myapplication.databinding.ModelMenuBinding
 import com.example.myapplication.databinding.ModelStockBinding
 
-class StockAdapter(private val items: MutableList<StockModel>) : RecyclerView.Adapter<StockAdapter.StockViewHolder>() {
+class StockAdapter(
+    private val items: MutableList<StockModel>,
+    private val onItemClick: (StockModel) -> Unit
+) : RecyclerView.Adapter<StockAdapter.StockViewHolder>() {
     lateinit var context: Context
     class StockViewHolder(val binding: ModelStockBinding):RecyclerView.ViewHolder(binding.root)
 
@@ -20,8 +23,14 @@ class StockAdapter(private val items: MutableList<StockModel>) : RecyclerView.Ad
     }
 
     override fun onBindViewHolder(holder: StockViewHolder, position: Int) {
+        val item = items[position]
+
         holder.binding.textView.text = items[position].id.toString()
         holder.binding.textView2.text = items[position].title
+
+        holder.itemView.setOnClickListener {
+            onItemClick(item)
+        }
     }
 
     override fun getItemCount(): Int = items.size

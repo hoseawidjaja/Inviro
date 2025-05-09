@@ -5,10 +5,28 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ItemsActivity.MenuActivity">
+    tools:context=".ItemsActivity.StockActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/views"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <!-- Back Button -->
+    <ImageView
+        android:id="@+id/backButton"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="4dp"
+        android:src="@drawable/ic_back_arrow"
+        android:contentDescription="Back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="16dp"/>
+
+    <!-- Title Display -->
+    <TextView
+        android:id="@+id/titleTextViewX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintTop_toBottomOf="@id/backButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
