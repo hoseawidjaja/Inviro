@@ -8,10 +8,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.MainActivity.HomeActivity
-import com.example.myapplication.MainActivity.NotificationActivity
+import com.example.myapplication.MainActivity.MenuManagementActivity
 import com.example.myapplication.MainActivity.ReportActivity
+import com.example.myapplication.MainActivity.StockManagementActivity
 import com.example.myapplication.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.FirebaseApp
 
 open class NavActivity : AppCompatActivity() {
 
@@ -55,6 +57,21 @@ open class NavActivity : AppCompatActivity() {
                     }
                     true
                 }
+                R.id.nav_stock -> {
+                    if (this !is StockManagementActivity) {
+                        startActivity(Intent(this, StockManagementActivity::class.java))
+                        finish()
+                    }
+                    true
+                }
+                R.id.nav_menu -> {
+                    if(this !is MenuManagementActivity) {
+                        startActivity(Intent(this, MenuManagementActivity::class.java))
+                        finish()
+                    }
+                    true
+                }
+
                 else -> false
             }
         }
@@ -77,6 +94,8 @@ open class NavActivity : AppCompatActivity() {
         val currentItem = when (this) {
             is HomeActivity -> R.id.nav_home
             is ReportActivity -> R.id.nav_report
+            is StockManagementActivity -> R.id.nav_stock
+            is MenuManagementActivity -> R.id.nav_menu
             else -> 0
         }
 
