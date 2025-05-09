@@ -25,7 +25,7 @@ class StockManagementActivity : NavActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_menu)
+        setContentView(R.layout.activity_stock)
 
         recyclerView = findViewById(R.id.views)
         recyclerView.layoutManager = LinearLayoutManager(this)

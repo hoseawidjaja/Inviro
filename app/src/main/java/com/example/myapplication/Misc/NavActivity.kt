@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.myapplication.MainActivity.HomeActivity
 import com.example.myapplication.MainActivity.MenuManagementActivity
 import com.example.myapplication.MainActivity.ReportActivity
@@ -20,6 +21,9 @@ open class NavActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nav)  // This must match your layout file
+
+        window.statusBarColor = ContextCompat.getColor(this, R.color.main_green)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.main_green)
 
         // Print or log when the navigation is created
         println(">> NavActivity created")
