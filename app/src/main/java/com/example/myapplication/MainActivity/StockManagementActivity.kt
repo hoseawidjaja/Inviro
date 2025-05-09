@@ -3,6 +3,7 @@ package com.example.myapplication.MainActivity
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.ItemsActivity.StockActivity
 import com.example.myapplication.Misc.NavActivity
 import com.example.myapplication.Misc.StockAdapter
@@ -11,7 +12,7 @@ import com.example.myapplication.ViewModels.StockModel
 import com.google.firebase.database.*
 
 class StockManagementActivity : NavActivity() {
-
+    private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: StockAdapter
     private val stockList = mutableListOf<StockModel>()
 
@@ -19,21 +20,17 @@ class StockManagementActivity : NavActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.stock_page)
 
-        val recyclerView = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.views)
+        recyclerView = findViewById(R.id.views)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Adapter with lambda click listener
         adapter = StockAdapter(stockList) { selectedItem ->
-            val intent = Intent(this, StockActivity::class.java).apply {
-                putExtra("menu_id", selectedItem.id)
-                putExtra("menu_title", selectedItem.title)
-            }
+            val intent = Intent(this, StockActivity::class.java)
+            intent.putExtra("stock_data", selectedItem)
             startActivity(intent)
         }
 
         recyclerView.adapter = adapter
 
-        // Firebase
         val databaseRef = FirebaseDatabase.getInstance().getReference("Stock_List")
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -46,7 +43,7 @@ class StockManagementActivity : NavActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Log error or show a toast
+                // Handle error
             }
         })
     }

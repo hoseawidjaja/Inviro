@@ -4,5 +4,6 @@ import java.io.Serializable
 
 data class StockModel(
     var id: Int = 0,
-    var title: String = ""
+    var title: String = "",
+    var quantity: Int = 0
 ): Serializable
