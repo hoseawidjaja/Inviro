@@ -1,4 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
 
-</selector>
+    <!-- Middle gray ring -->
+    <path
+        android:fillColor="#D3D3D3"
+        android:pathData="M50,10
+                          A40,40 0 1,1 49.99,10
+                          Z" />
+
+    <!-- White center -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M50,20
+                          A30,30 0 1,1 49.99,20
+                          Z" />
+
+    <!-- Profile head -->
+    <path
+        android:fillColor="#B0B0B0"
+        android:pathData="M50,35
+                          A10,10 0 1,1 49.99,35
+                          Z" />
+
+    <!-- Profile shoulders (simple arc-like base) -->
+    <path
+        android:fillColor="#B0B0B0"
+        android:pathData="M35,60
+                          Q50,50 65,60
+                          Q50,75 35,60
+                          Z" />
+</vector>
