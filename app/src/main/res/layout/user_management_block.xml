@@ -10,10 +10,9 @@
 
     <!-- Background Frame with rounded corners -->
     <FrameLayout
-        android:layout_width="387dp"
-        android:layout_height="120dp"
-        android:background="@drawable/rounded_background_white"
-        android:padding="12dp"
+        android:layout_width="350dp"
+        android:layout_height="65dp"
+        android:background="@drawable/counter_background_green"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,9 +27,10 @@
 
             <!-- Profile picture -->
             <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_marginEnd="12dp"
+                android:layout_marginStart="10dp"
                 android:contentDescription="Profile Picture"
                 android:padding="4dp"
                 android:src="@drawable/ic_profile" />
@@ -47,39 +47,35 @@
                     android:id="@+id/name_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
-                    android:text="System"
+                    android:text="Name: John Doe"
                     android:textSize="16sp"
+                    android:textColor="@color/white"
                     android:textStyle="bold" />
 
-                <!-- Divider line -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="4dp"
-                    android:layout_marginTop="2dp"
-                    android:background="@android:color/darker_gray" />
-
                 <TextView
-                    android:id="@+id/notification_message"
+                    android:id="@+id/role_name"
                     android:layout_width="match_parent"
-                    android:layout_height="53dp"
-                    android:layout_marginTop="3dp"
-                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eget velit purus. Fusce a interdum eros, sit amet sagittis ex."
-                    android:textColor="@color/black"
+                    android:layout_height="20dp"
+                    android:text="Role: Owner"
+                    android:textColor="@color/white"
                     android:textSize="14sp" />
-            </LinearLayout>
-        </LinearLayout>
 
-        <!-- Delete icon in top-right -->
-        <ImageButton
-            android:id="@+id/delete_notification"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|end"
-            android:layout_marginTop="2dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_delete" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/edit_button"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:gravity="start|center_vertical"
+                app:icon="@drawable/ic_edit"
+                app:iconSize="25dp"
+                app:backgroundTint="@color/main_green"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toBottomOf="@id/activity_profile_button"
+                app:layout_constraintVertical_bias="0" />
+
+
+        </LinearLayout>
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

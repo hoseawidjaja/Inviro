@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sales_detail_button"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".MainActivity.HomeActivity">
+
+    <!-- Background Frame with rounded corners -->
+    <FrameLayout
+        android:layout_width="350dp"
+        android:layout_height="64dp"
+        android:background="@drawable/counter_background_green"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Horizontal content layout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Food image in circle -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/imageContainer"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                app:cardCornerRadius="24dp"
+                app:cardBackgroundColor="@color/teal_700">
+
+                <ImageView
+                    android:id="@+id/foodImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_profile"
+                    android:contentDescription="Bowl of fruits with banana and berries" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Food name -->
+            <TextView
+                android:id="@+id/foodName"
+                android:layout_width="0dp"
+                android:layout_height="25dp"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="Banana Berries"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="italic" />
+
+            <!-- Counter controls -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginEnd="8dp"
+                android:gravity="center_vertical">
+
+                <!-- Decrease button -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/decreaseButton"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="-"
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
+                </androidx.cardview.widget.CardView>
+
+                <!-- Count display -->
+                <TextView
+                    android:id="@+id/countTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/count_background_white"
+                    android:gravity="center"
+                    android:minWidth="40dp"
+                    android:padding="4dp"
+                    android:text="16"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
+
+                <!-- Increase button -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/increaseButton"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="+"
+                        android:textColor="#000000"
+                        android:textSize="20sp" />
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
