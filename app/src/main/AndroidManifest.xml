@@ -32,6 +32,9 @@
             android:name=".ItemsActivity.MenuActivity"
             android:exported="false" />
         <activity
+            android:name=".MainActivity.SalesActivity"
+            android:exported="false" />
+        <activity
             android:name=".Misc.NavActivity"
             android:exported="false" />
         <activity

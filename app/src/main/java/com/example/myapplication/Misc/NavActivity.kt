@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import com.example.myapplication.MainActivity.HomeActivity
 import com.example.myapplication.MainActivity.MenuManagementActivity
 import com.example.myapplication.MainActivity.ReportActivity
+import com.example.myapplication.MainActivity.SalesActivity
 import com.example.myapplication.MainActivity.StockManagementActivity
 import com.example.myapplication.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -69,8 +70,8 @@ open class NavActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_menu -> {
-                    if(this !is MenuManagementActivity) {
-                        startActivity(Intent(this, MenuManagementActivity::class.java))
+                    if(this !is SalesActivity) {
+                        startActivity(Intent(this, SalesActivity::class.java))
                         finish()
                     }
                     true
@@ -99,7 +100,7 @@ open class NavActivity : AppCompatActivity() {
             is HomeActivity -> R.id.nav_home
             is ReportActivity -> R.id.nav_report
             is StockManagementActivity -> R.id.nav_stock
-            is MenuManagementActivity -> R.id.nav_menu
+            is SalesActivity -> R.id.nav_menu
             else -> 0
         }
 

@@ -19,7 +19,7 @@ import com.example.myapplication.Misc.SupabaseClient
 import com.example.myapplication.R
 import com.example.myapplication.ViewModels.StockModel
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
+//import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -103,8 +103,8 @@ class StockActivity : AppCompatActivity() {
         // Load existing image if available
         Glide.with(this@StockActivity)
             .load(stockImage)
-            .placeholder(R.drawable.ic_image_ingredient_placeholder)
-            .error(R.drawable.ic_image_ingredient_placeholder)
+//            .placeholder(R.drawable.ic_image_ingredient_placeholder)
+//            .error(R.drawable.ic_image_ingredient_placeholder)
             .skipMemoryCache(true)
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .into(imagePreview)

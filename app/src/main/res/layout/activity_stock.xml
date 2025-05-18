@@ -36,8 +36,9 @@
         android:hint="Ingredient Name"
         android:inputType="text"
         android:padding="12dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/edit_text_background" />
+        android:layout_marginBottom="16dp" />
+<!--        android:background="@drawable/edit_text_background"-->
+
 
     <!-- Quantity + Unit -->
     <LinearLayout
@@ -53,8 +54,8 @@
             android:layout_weight="1"
             android:hint="Quantity"
             android:padding="12dp"
-            android:inputType="number"
-            android:background="@drawable/edit_text_background" />
+            android:inputType="number" />
+<!--            android:background="@drawable/edit_text_background" />-->
 
         <Spinner
             android:id="@+id/unitSpinner"
@@ -78,9 +79,9 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_image_ingredient_placeholder"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/edit_text_background" />
+            android:layout_marginBottom="12dp" />
+<!--            android:src="@drawable/ic_image_ingredient_placeholder"-->
+<!--            android:background="@drawable/edit_text_background" />-->
 
         <!-- Upload Image Button -->
         <Button
