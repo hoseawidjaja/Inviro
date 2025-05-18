@@ -23,4 +23,6 @@ class MenuAdapter(private val items: MutableList<MenuModel>) : RecyclerView.Adap
     }
 
     override fun getItemCount(): Int = items.size
+
+
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="stock_units_array">
+        <item>g</item>
+        <item>ml</item>
+        <item>pcs</item>
+    </string-array>
+</resources>

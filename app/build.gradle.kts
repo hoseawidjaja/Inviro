@@ -49,9 +49,17 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.database.ktx)
     implementation(libs.car.ui.lib)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.play.services.base)
+    implementation(libs.play.services.base)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.firebase.storage)
+    implementation(libs.supabase.kt)
+    implementation(libs.okhttp)
+
+
 
     implementation(libs.glide)
     implementation(libs.gson)

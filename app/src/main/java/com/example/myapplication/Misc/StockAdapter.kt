@@ -4,8 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.myapplication.ItemsActivity.StockActivity
+import com.example.myapplication.ItemsActivity.StockModelActivity
 import com.example.myapplication.ViewModels.StockModel
 import com.example.myapplication.databinding.ModelStockBinding
 
@@ -27,25 +30,54 @@ class StockAdapter(
     override fun onBindViewHolder(holder: StockViewHolder, position: Int) {
         val item = items[position]
 
-        // Bind the stock data to the UI elements
-        holder.binding.textView.text = item.id  // Displaying the ID (which is the title)
-        holder.binding.textView2.text = item.title  // Displaying the title
+        // Set title and ID
+        holder.binding.ingredientTitle.text = item.title
+        holder.binding.ingredientId.text = item.id
+        holder.binding.ingredientQuantity.text = item.stock.toString()
 
-        // Set an onClickListener to open the StockActivity when an item is clicked
+        // Set unit if available
+        holder.binding.ingredientUnit.text = item.unit ?: "No unit"
+
+        // Load image if available
+        Glide.with(context)
+            .load(item.image ?: "")
+            .placeholder(android.R.drawable.ic_menu_report_image)
+            .into(holder.binding.ingredientImage)
+
+        // On click - open StockActivity
         holder.itemView.setOnClickListener {
-            val intent = Intent(context, StockActivity::class.java)
-            intent.putExtra("stock_id", item.id)
-            intent.putExtra("stock_title", item.title)
-            intent.putExtra("stock_quantity", item.stock)
+            val intent = Intent(context, StockActivity::class.java).apply {
+                putExtra("stock_id", item.id)
+                putExtra("stock_title", item.title)
+                putExtra("stock_quantity", item.stock)
+                putExtra("stock_image", item.image ?: "")
+                putExtra("stock_unit", item.unit ?: "")
+            }
             context.startActivity(intent)
         }
+
+        // Delete button click opens StockModelActivity (for deletion)
+        holder.binding.deleteButton.setOnClickListener {
+            Toast.makeText(context, "Delete clicked for ${item.id}", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(context, StockModelActivity::class.java).apply {
+                putExtra("stock_id", item.id)
+                putExtra("stock_title", item.title)
+                putExtra("stock_quantity", item.stock)
+                putExtra("stock_image", item.image ?: "")
+                putExtra("stock_unit", item.unit ?: "")
+            }
+            context.startActivity(intent)
+        }
+
     }
 
     override fun getItemCount(): Int = items.size
 
-    // Method to update the list and notify adapter about the change
     fun setItems(newItems: MutableList<StockModel>) {
         this.items = newItems
-        notifyDataSetChanged()  // Refresh the RecyclerView
+        notifyDataSetChanged()
     }
+
+
 }
