@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
 import com.example.myapplication.ViewModels.StockModel
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import kotlin.random.Random
 
 class StockActivity : AppCompatActivity() {
     private lateinit var titleEditText: EditText
@@ -18,9 +17,10 @@ class StockActivity : AppCompatActivity() {
     private lateinit var saveButton: Button
     private lateinit var backButton: ImageView
 
-    private var stockId: Int = -1
-    private var stockTitle: String = ""
+    private var stockId: String = ""  // This is the current Firebase key (title)
     private var stockQuantity: Int = 0
+    private var stockImage: String = ""
+    private var stockTitle: String = ""  // This is the title entered by the user
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,50 +32,78 @@ class StockActivity : AppCompatActivity() {
         backButton = findViewById(R.id.backButton)
 
         // Get data passed from previous activity
-        stockId = intent.getIntExtra("stock_id", -1)
-        stockTitle = intent.getStringExtra("stock_title") ?: ""
+        stockId = intent.getStringExtra("stock_id") ?: ""
+        stockTitle = intent.getStringExtra("stock_title") ?: ""  // Save the title initially
         stockQuantity = intent.getIntExtra("stock_quantity", 0)
+        stockImage = intent.getStringExtra("stock_image") ?: ""
 
-        // Pre-fill fields if it's an edit or view
+        // Pre-fill fields if editing
         titleEditText.setText(stockTitle)
         quantityEditText.setText(stockQuantity.toString())
 
-        // Save button logic
         saveButton.setOnClickListener {
-            val newTitle = titleEditText.text.toString()
+            val newTitle = titleEditText.text.toString().trim()  // Get the new title entered by the user
             val newQuantity = quantityEditText.text.toString().toIntOrNull() ?: 0
 
-            val ref = FirebaseDatabase.getInstance().getReference("Stock_List")
-
-            if (stockId == -1) {
-                // If it's a new stock item, create a new ID (incremental)
-                ref.orderByChild("id").limitToLast(1).addListenerForSingleValueEvent(object :
-                    ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val newId = (snapshot.children.firstOrNull()?.child("id")?.getValue(Int::class.java) ?: 0) + 1
-                        val newStock = StockModel(newId, newTitle, newQuantity)
-                        ref.child(newId.toString()).setValue(newStock)
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        // Handle error
-                    }
-                })
-            } else {
-                // If editing an existing stock item
-                val updates = mapOf(
-                    "title" to newTitle,
-                    "quantity" to newQuantity
-                )
-                ref.child(stockId.toString()).updateChildren(updates)
+            if (newTitle.isEmpty()) {
+                // Prevent saving empty titles
+                Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
 
-            finish() // Go back after saving
+            val ref = FirebaseDatabase.getInstance().getReference("ingredients")
+
+            if (stockId.isEmpty()) {
+                // Create a new ingredient with the title as the key
+                val newId = generateRandomId()  // Generate 8-character alphanumeric ID
+                val newStock = StockModel(
+                    id = newId,  // Use the generated ID as the stock ID
+                    stock = newQuantity,
+                    image = stockImage,
+                    title = newTitle  // Set title here
+                )
+                ref.child(newTitle).setValue(newStock)  // Save the new stock with title as the key
+            } else {
+                if (newTitle != stockTitle) {
+                    // Title has changed, so we need to update the key in Firebase
+                    // Keep the old ID, and just update the title in the key
+                    val updatedStock = StockModel(
+                        id = stockId,  // Keep the old ID (do not generate new ID)
+                        stock = newQuantity,
+                        image = stockImage,
+                        title = newTitle  // Update the title
+                    )
+                    ref.child(stockTitle).removeValue().addOnSuccessListener {
+                        // After deleting the old entry, add the new entry with updated title
+                        ref.child(newTitle).setValue(updatedStock)
+                        Toast.makeText(this, "Title updated successfully", Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener {
+                        Toast.makeText(this, "Failed to update title", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // If title hasn't changed, just update the stock data
+                    val updates = mapOf(
+                        "stock" to newQuantity,
+                        "image" to stockImage
+                    )
+                    ref.child(stockId).updateChildren(updates)  // Use stockId as the key (title)
+                    Toast.makeText(this, "Stock updated successfully", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            finish()
         }
 
-        // Back button logic
         backButton.setOnClickListener {
             finish()
         }
+    }
+
+    // Function to generate an 8-character alphanumeric ID
+    private fun generateRandomId(): String {
+        val charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        return (1..8)
+            .map { charset[Random.nextInt(charset.length)] }
+            .joinToString("")
     }
 }

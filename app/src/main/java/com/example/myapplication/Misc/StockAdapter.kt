@@ -28,7 +28,7 @@ class StockAdapter(
         val item = items[position]
 
         // Bind the stock data to the UI elements
-        holder.binding.textView.text = item.id.toString()  // Displaying the ID
+        holder.binding.textView.text = item.id  // Displaying the ID (which is the title)
         holder.binding.textView2.text = item.title  // Displaying the title
 
         // Set an onClickListener to open the StockActivity when an item is clicked
@@ -36,7 +36,7 @@ class StockAdapter(
             val intent = Intent(context, StockActivity::class.java)
             intent.putExtra("stock_id", item.id)
             intent.putExtra("stock_title", item.title)
-            intent.putExtra("stock_quantity", item.quantity)
+            intent.putExtra("stock_quantity", item.stock)
             context.startActivity(intent)
         }
     }

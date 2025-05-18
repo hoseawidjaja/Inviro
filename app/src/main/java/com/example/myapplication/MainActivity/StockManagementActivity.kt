@@ -2,7 +2,6 @@ package com.example.myapplication.MainActivity
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,31 +32,32 @@ class StockManagementActivity : NavActivity() {
             val intent = Intent(this, StockActivity::class.java)
             intent.putExtra("stock_id", selectedStock.id)
             intent.putExtra("stock_title", selectedStock.title)
-            intent.putExtra("stock_quantity", selectedStock.quantity)
+            intent.putExtra("stock_quantity", selectedStock.stock)
             startActivity(intent)
         }
         recyclerView.adapter = adapter
 
         // Setup the (+) button for adding a new stock item
         addButton = findViewById(R.id.addStockButton)
-        // Starting StockActivity with the stock data (id, title, and quantity)
         addButton.setOnClickListener {
             val intent = Intent(this, StockActivity::class.java)
-            intent.putExtra("stock_id", -1)  // Indicate it's a new item (no ID assigned yet)
+            intent.putExtra("stock_id", "")  // Indicate it's a new item (no ID assigned yet)
             intent.putExtra("stock_title", "") // Empty title for new item
             intent.putExtra("stock_quantity", 0) // Set quantity to 0 for new item
             startActivity(intent)
         }
 
-
         // Fetch data from Firebase
-        val databaseRef = FirebaseDatabase.getInstance().getReference("Stock_List")
+        val databaseRef = FirebaseDatabase.getInstance().getReference("ingredients")
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 stockList.clear()
                 for (itemSnapshot in snapshot.children) {
                     val item = itemSnapshot.getValue(StockModel::class.java)
-                    item?.let { stockList.add(it) }
+                    item?.let {
+                        it.title = itemSnapshot.key ?: ""  // Set the title to the Firebase key
+                        stockList.add(it)
+                    }
                 }
                 adapter.setItems(stockList)  // Update RecyclerView with the new data
             }
