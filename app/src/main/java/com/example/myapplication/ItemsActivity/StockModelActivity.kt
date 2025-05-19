@@ -2,6 +2,7 @@ package com.example.myapplication.ItemsActivity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,7 @@ class StockModelActivity : AppCompatActivity() {
 
         // Get stockId passed from previous activity
         stockId = intent.getStringExtra("stock_id") ?: ""
+        Log.d("StockModelActivity", "Stock ID received: $stockId")
 
         deleteButton = findViewById(R.id.deleteButton)
         if (deleteButton == null) {

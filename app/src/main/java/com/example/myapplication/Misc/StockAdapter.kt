@@ -2,6 +2,7 @@ package com.example.myapplication.Misc
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -11,6 +12,7 @@ import com.example.myapplication.ItemsActivity.StockActivity
 import com.example.myapplication.ItemsActivity.StockModelActivity
 import com.example.myapplication.ViewModels.StockModel
 import com.example.myapplication.databinding.ModelStockBinding
+import com.google.firebase.database.FirebaseDatabase
 
 class StockAdapter(
     private var items: MutableList<StockModel>,
@@ -58,16 +60,27 @@ class StockAdapter(
 
         // Delete button click opens StockModelActivity (for deletion)
         holder.binding.deleteButton.setOnClickListener {
-            Toast.makeText(context, "Delete clicked for ${item.id}", Toast.LENGTH_SHORT).show()
+            val ref = FirebaseDatabase.getInstance().getReference("ingredients")
+            val query = ref.orderByChild("id").equalTo(item.id)
 
-            val intent = Intent(context, StockModelActivity::class.java).apply {
-                putExtra("stock_id", item.id)
-                putExtra("stock_title", item.title)
-                putExtra("stock_quantity", item.stock)
-                putExtra("stock_image", item.image ?: "")
-                putExtra("stock_unit", item.unit ?: "")
+            query.get().addOnSuccessListener { snapshot ->
+                if (snapshot.exists()) {
+                    for (childSnapshot in snapshot.children) {
+                        childSnapshot.ref.removeValue()
+                            .addOnSuccessListener {
+                                Toast.makeText(context, "Item deleted successfully", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener { error ->
+                                Toast.makeText(context, "Delete failed: ${error.message}", Toast.LENGTH_LONG).show()
+                            }
+                    }
+                } else {
+                    Toast.makeText(context, "Item not found for deletion", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener { error ->
+                Toast.makeText(context, "Error during query: ${error.message}", Toast.LENGTH_LONG).show()
             }
-            context.startActivity(intent)
+
         }
 
     }

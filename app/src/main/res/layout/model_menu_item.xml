@@ -1,30 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/light_cream"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="10dp"
+    android:padding="12dp">
 
+    <!-- Menu item title (left) -->
     <TextView
         android:id="@+id/menuItemTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="Item Name"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/menuItemCount"
+        app:layout_constraintHorizontal_bias="0"
+        tools:text="Cappuccino" />
 
+    <!-- Menu item count (right) -->
     <TextView
         android:id="@+id/menuItemCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="x2"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="x3" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
