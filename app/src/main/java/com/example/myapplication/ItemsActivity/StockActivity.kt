@@ -115,12 +115,11 @@ class StockActivity : AppCompatActivity() {
         }
 
         saveButton.setOnClickListener {
-            val newTitle = titleEditText.text.toString().trim()  // Get the new title entered by the user
+            val newTitle = titleEditText.text.toString().trim()
             val newQuantity = quantityEditText.text.toString().toIntOrNull() ?: 0
             val newUnit = unitSpinner.selectedItem.toString()
 
             if (newTitle.isEmpty()) {
-                // Prevent saving empty titles
                 Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -128,47 +127,53 @@ class StockActivity : AppCompatActivity() {
             val ref = FirebaseDatabase.getInstance().getReference("ingredients")
 
             if (stockId.isEmpty()) {
-                // Create a new ingredient with the title as the key
-                val newId = generateRandomId()  // Generate 8-character alphanumeric ID
-                val newStock = StockModel(
-                    id = newId,  // Use the generated ID as the stock ID
-                    stock = newQuantity,
-                    image = stockImage,
-                    title = newTitle,  // Set title here
-                    unit = newUnit  // Add unit here
-                )
-                ref.child(newTitle).setValue(newStock)  // Save the new stock with title as the key
-            } else {
-                if (newTitle != stockTitle) {
-                    // Title has changed, so we need to update the key in Firebase
-                    // Keep the old ID, and just update the title in the key
-                    val updatedStock = StockModel(
-                        id = stockId,  // Keep the old ID (do not generate new ID)
+                // Generate unique ID asynchronously
+                generateUniqueId { newId ->
+
+                    val newStock = StockModel(
+                        id = newId,
                         stock = newQuantity,
                         image = stockImage,
-                        title = newTitle,  // Update the title
-                        unit = newUnit  // Add unit here
+                        title = newTitle,
+                        unit = newUnit
+                    )
+
+                    ref.child(newTitle).setValue(newStock)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Stock added successfully", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                        .addOnFailureListener { error ->
+                            Toast.makeText(this, "Failed to add stock: ${error.message}", Toast.LENGTH_LONG).show()
+                        }
+                }
+            } else {
+                if (newTitle != stockTitle) {
+                    val updatedStock = StockModel(
+                        id = stockId,
+                        stock = newQuantity,
+                        image = stockImage,
+                        title = newTitle,
+                        unit = newUnit
                     )
                     ref.child(stockTitle).removeValue().addOnSuccessListener {
-                        // After deleting the old entry, add the new entry with updated title
                         ref.child(newTitle).setValue(updatedStock)
                         Toast.makeText(this, "Title updated successfully", Toast.LENGTH_SHORT).show()
+                        finish()
                     }.addOnFailureListener {
                         Toast.makeText(this, "Failed to update title", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    // If title hasn't changed, just update the stock data
                     val updates = mapOf(
                         "stock" to newQuantity,
                         "image" to stockImage,
-                        "unit" to newUnit  // Add unit here
+                        "unit" to newUnit
                     )
-                    ref.child(stockTitle).updateChildren(updates)  // Use the title as the key
+                    ref.child(stockTitle).updateChildren(updates)
                     Toast.makeText(this, "Stock updated successfully", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             }
-
-            finish()
         }
 
         backButton.setOnClickListener {
@@ -230,11 +235,32 @@ class StockActivity : AppCompatActivity() {
 
 
     // Function to generate an 8-character alphanumeric ID
-    private fun generateRandomId(): String {
+    private fun generateUniqueId(callback: (String) -> Unit) {
         val charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        return (1..8)
-            .map { charset[Random.nextInt(charset.length)] }
-            .joinToString("")
+        val ref = FirebaseDatabase.getInstance().getReference("ingredients") // or "menu", depending on your use case
+
+        fun tryGenerate() {
+            val newId = (1..8)
+                .map { charset.random() }
+                .joinToString("")
+
+            ref.orderByChild("id").equalTo(newId).get()
+                .addOnSuccessListener { snapshot ->
+                    if (!snapshot.exists()) {
+                        // ID is unique
+                        callback(newId)
+                    } else {
+                        // ID already exists, try again
+                        tryGenerate()
+                    }
+                }
+                .addOnFailureListener { error ->
+                    // Handle error gracefully (fallback or show message)
+                    Log.e("ID_GEN", "Error checking ID: ${error.message}")
+                }
+        }
+
+        tryGenerate()
     }
 
 }

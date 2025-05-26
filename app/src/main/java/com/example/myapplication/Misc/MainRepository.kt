@@ -1,9 +1,8 @@
 package com.example.myapplication.Misc
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.myapplication.ViewModels.MenuModel
+import com.example.myapplication.ViewModels.ProductModel
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -21,14 +20,14 @@ class MainRepository (context: Context){
 
     private val firebaseDatabase=FirebaseDatabase.getInstance()
 
-    fun loadMenu():LiveData<MutableList<MenuModel>>{
-        val listData = MutableLiveData<MutableList<MenuModel>>()
+    fun loadMenu():LiveData<MutableList<ProductModel>>{
+        val listData = MutableLiveData<MutableList<ProductModel>>()
         val ref = firebaseDatabase.getReference("Menu_List")
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val list= mutableListOf<MenuModel>()
+                val list= mutableListOf<ProductModel>()
                 for(childSnapshot in snapshot.children){
-                    val item=childSnapshot.getValue(MenuModel::class.java)
+                    val item=childSnapshot.getValue(ProductModel::class.java)
                     item?.let{list.add(it)}
                 }
                 listData.value = list
