@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_items"
+        android:icon="@drawable/ic_grid"
+        android:title="Items"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_stock"
+        android:icon="@drawable/ic_document"
+        android:title="Stock"
+        app:showAsAction="always" />
+</menu>

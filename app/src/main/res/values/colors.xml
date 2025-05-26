@@ -21,9 +21,19 @@
     <color name="text_secondary">#8E8E93</color>
 
     <!--    Color Palette-->
-    <color name="main_green">#739B5E</color>
-    <color name="light_green">#E4EFE7</color>
-    <color name="main_cream">#FAF1E6</color>
-    <color name="light_cream">#FDFAF6</color>
+<!--    <color name="main_green">#739B5E</color>-->
+<!--    <color name="light_green">#E4EFE7</color>-->
+<!--    <color name="main_cream">#FAF1E6</color>-->
+<!--    <color name="light_cream">#FDFAF6</color>-->
+
+
+    <color name="main_green">#FFFFFF</color>
+    <color name="light_green">#333333</color>
+    <color name="main_cream">#000000</color>
+    <color name="light_cream">#1171FF</color>
+    <color name="main_background">#F5F5F7</color>
+    <color name="indicator">#801171FF</color>
+
+<!--    <color name="design_bottom_navigation_shadow_color">#1171FF</color>-->
 
 </resources>

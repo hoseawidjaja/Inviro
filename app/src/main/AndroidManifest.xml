@@ -20,16 +20,19 @@
             android:name=".Misc.MainViewModel"
             android:exported="false" />
         <activity
-            android:name=".MainActivity.MenuManagementActivity"
+            android:name=".MainActivity.ProductFragment"
             android:exported="false" />
         <activity
-            android:name=".MainActivity.StockManagementActivity"
+            android:name=".MainActivity.StockFragment"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity.ManagementActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity.NotificationActivity"
             android:exported="false" />
         <activity
-            android:name=".ItemsActivity.MenuActivity"
+            android:name=".ItemsActivity.ProductActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity.SalesActivity"

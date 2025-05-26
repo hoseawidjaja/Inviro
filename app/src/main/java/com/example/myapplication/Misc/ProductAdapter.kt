@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.ViewModels.MenuModel
-import com.example.myapplication.databinding.ModelMenuBinding
+import com.example.myapplication.databinding.ModelProductBinding
 
-class MenuAdapter(private val items: MutableList<MenuModel>) : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
+class ProductAdapter(private val items: MutableList<MenuModel>) : RecyclerView.Adapter<ProductAdapter.MenuViewHolder>() {
     lateinit var context: Context
-    class MenuViewHolder(val binding: ModelMenuBinding):RecyclerView.ViewHolder(binding.root)
+    class MenuViewHolder(val binding: ModelProductBinding):RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
         context = parent.context
-        val binding = ModelMenuBinding.inflate(LayoutInflater.from(context), parent, false)
+        val binding = ModelProductBinding.inflate(LayoutInflater.from(context), parent, false)
         return MenuViewHolder(binding)
     }
 

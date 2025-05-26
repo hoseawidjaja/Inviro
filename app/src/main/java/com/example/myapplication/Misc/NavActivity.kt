@@ -1,6 +1,7 @@
 package com.example.myapplication.Misc
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.widget.FrameLayout
@@ -9,13 +10,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.myapplication.MainActivity.HomeActivity
-import com.example.myapplication.MainActivity.MenuManagementActivity
 import com.example.myapplication.MainActivity.ReportActivity
 import com.example.myapplication.MainActivity.SalesActivity
-import com.example.myapplication.MainActivity.StockManagementActivity
+import com.example.myapplication.MainActivity.ManagementActivity
 import com.example.myapplication.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.FirebaseApp
 
 open class NavActivity : AppCompatActivity() {
 
@@ -23,8 +22,8 @@ open class NavActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nav)  // This must match your layout file
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.main_green)
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.main_green)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.main_background)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.main_background)
 
         // Print or log when the navigation is created
         println(">> NavActivity created")
@@ -46,6 +45,7 @@ open class NavActivity : AppCompatActivity() {
     }
 
     private fun setupNavigation(bottomNav: BottomNavigationView) {
+        bottomNav.itemActiveIndicatorColor = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.indicator))
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
@@ -63,8 +63,8 @@ open class NavActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_stock -> {
-                    if (this !is StockManagementActivity) {
-                        startActivity(Intent(this, StockManagementActivity::class.java))
+                    if (this !is ManagementActivity) {
+                        startActivity(Intent(this, ManagementActivity::class.java))
                         finish()
                     }
                     true
@@ -99,7 +99,7 @@ open class NavActivity : AppCompatActivity() {
         val currentItem = when (this) {
             is HomeActivity -> R.id.nav_home
             is ReportActivity -> R.id.nav_report
-            is StockManagementActivity -> R.id.nav_stock
+            is ManagementActivity -> R.id.nav_stock
             is SalesActivity -> R.id.nav_menu
             else -> 0
         }

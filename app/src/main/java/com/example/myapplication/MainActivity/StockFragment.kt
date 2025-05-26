@@ -2,34 +2,36 @@ package com.example.myapplication.MainActivity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.ItemsActivity.StockActivity
-import com.example.myapplication.Misc.NavActivity
 import com.example.myapplication.Misc.StockAdapter
 import com.example.myapplication.R
 import com.example.myapplication.ViewModels.StockModel
 import com.google.firebase.database.*
 
-class StockManagementActivity : NavActivity() {
+class StockFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: StockAdapter
     private val stockList = mutableListOf<StockModel>()
     private lateinit var addButton: ImageView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.stock_page)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.stock_page, container, false)
 
-        // RecyclerView setup
-        recyclerView = findViewById(R.id.views)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView = view.findViewById(R.id.views)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Initialize the adapter with click listener
         adapter = StockAdapter(stockList) { selectedStock ->
-            val intent = Intent(this, StockActivity::class.java)
+            val intent = Intent(requireContext(), StockActivity::class.java)
             intent.putExtra("stock_id", selectedStock.id)
             intent.putExtra("stock_title", selectedStock.title)
             intent.putExtra("stock_quantity", selectedStock.stock)
@@ -37,17 +39,15 @@ class StockManagementActivity : NavActivity() {
         }
         recyclerView.adapter = adapter
 
-        // Setup the (+) button for adding a new stock item
-        addButton = findViewById(R.id.addStockButton)
+        addButton = view.findViewById(R.id.addStockButton)
         addButton.setOnClickListener {
-            val intent = Intent(this, StockActivity::class.java)
-            intent.putExtra("stock_id", "")  // Indicate it's a new item (no ID assigned yet)
-            intent.putExtra("stock_title", "") // Empty title for new item
-            intent.putExtra("stock_quantity", 0) // Set quantity to 0 for new item
+            val intent = Intent(requireContext(), StockActivity::class.java)
+            intent.putExtra("stock_id", "")
+            intent.putExtra("stock_title", "")
+            intent.putExtra("stock_quantity", 0)
             startActivity(intent)
         }
 
-        // Fetch data from Firebase
         val databaseRef = FirebaseDatabase.getInstance().getReference("ingredients")
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -55,16 +55,18 @@ class StockManagementActivity : NavActivity() {
                 for (itemSnapshot in snapshot.children) {
                     val item = itemSnapshot.getValue(StockModel::class.java)
                     item?.let {
-                        it.title = itemSnapshot.key ?: ""  // Set the title to the Firebase key
+                        it.title = itemSnapshot.key ?: ""
                         stockList.add(it)
                     }
                 }
-                adapter.setItems(stockList)  // Update RecyclerView with the new data
+                adapter.setItems(stockList)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error
+                // Log or handle error
             }
         })
+
+        return view
     }
 }

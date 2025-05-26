@@ -17,7 +17,7 @@ class MenuItemAdapter(private val menuItemList: List<MenuItemModel>) : RecyclerV
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuItemViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.model_menu_item, parent, false)
+            .inflate(R.layout.model_product_item, parent, false)
         return MenuItemViewHolder(itemView)
     }
 
