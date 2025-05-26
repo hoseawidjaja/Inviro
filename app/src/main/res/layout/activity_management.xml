@@ -2,7 +2,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/light_cream"
+    android:paddingTop="20dp">
 
     <!-- Vertical guidelines -->
     <androidx.constraintlayout.widget.Guideline
@@ -27,7 +29,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_grid"
         android:contentDescription="Stock"
-        android:tint="@android:color/white"
+        android:tint="@android:color/black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/fragment_container"
         app:layout_constraintStart_toStartOf="@id/guideline25" />
@@ -40,7 +42,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_document"
         android:contentDescription="Product"
-        android:tint="@android:color/white"
+        android:tint="@android:color/black"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/fragment_container"
         app:layout_constraintStart_toStartOf="@id/guideline75" />

@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.myapplication.ItemsActivity.StockActivity
@@ -60,27 +61,33 @@ class StockAdapter(
 
         // Delete button click opens StockModelActivity (for deletion)
         holder.binding.deleteButton.setOnClickListener {
-            val ref = FirebaseDatabase.getInstance().getReference("ingredients")
-            val query = ref.orderByChild("id").equalTo(item.id)
+            AlertDialog.Builder(context)
+                .setTitle("Delete Ingredient")
+                .setMessage("Are you sure you want to delete this item? This action cannot be undone.")
+                .setPositiveButton("Delete") { dialog, _ ->
+                    val ref = FirebaseDatabase.getInstance().getReference("ingredients")
+                    val query = ref.orderByChild("id").equalTo(item.id)
 
-            query.get().addOnSuccessListener { snapshot ->
-                if (snapshot.exists()) {
-                    for (childSnapshot in snapshot.children) {
-                        childSnapshot.ref.removeValue()
-                            .addOnSuccessListener {
-                                Toast.makeText(context, "Item deleted successfully", Toast.LENGTH_SHORT).show()
+                    query.get().addOnSuccessListener { snapshot ->
+                        if (snapshot.exists()) {
+                            for (childSnapshot in snapshot.children) {
+                                childSnapshot.ref.removeValue()
+                                    .addOnSuccessListener {
+                                        Toast.makeText(context, "Item deleted successfully", Toast.LENGTH_SHORT).show()
+                                    }
+                                    .addOnFailureListener { error ->
+                                        Toast.makeText(context, "Delete failed: ${error.message}", Toast.LENGTH_LONG).show()
+                                    }
                             }
-                            .addOnFailureListener { error ->
-                                Toast.makeText(context, "Delete failed: ${error.message}", Toast.LENGTH_LONG).show()
-                            }
+                        } else {
+                            Toast.makeText(context, "Item not found for deletion", Toast.LENGTH_SHORT).show()
+                        }
+                    }.addOnFailureListener { error ->
+                        Toast.makeText(context, "Error during query: ${error.message}", Toast.LENGTH_LONG).show()
                     }
-                } else {
-                    Toast.makeText(context, "Item not found for deletion", Toast.LENGTH_SHORT).show()
                 }
-            }.addOnFailureListener { error ->
-                Toast.makeText(context, "Error during query: ${error.message}", Toast.LENGTH_LONG).show()
-            }
-
+                .setNegativeButton("Cancel", null) // do nothing if user cancels
+                .show()
         }
 
     }
