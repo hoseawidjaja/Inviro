@@ -76,7 +76,43 @@ class ProductActivity : AppCompatActivity() {
         imagePreview = findViewById(R.id.imagePreview)
         stockRecyclerView = findViewById(R.id.ingredientsRecyclerView)
         stockRecyclerView.layoutManager = LinearLayoutManager(this)
-        stockAdapter = StockUsageAdapter(stockList)
+        stockAdapter = StockUsageAdapter(stockList, object : StockUsageAdapter.OnIngredientActionListener {
+            override fun onDelete(position: Int) {
+                val ingredient = stockList[position]
+                android.app.AlertDialog.Builder(this@ProductActivity)
+                    .setTitle("Delete Ingredient")
+                    .setMessage("Are you sure you want to remove \"${ingredient.title}\"?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        stockList.removeAt(position)
+                        stockAdapter.notifyItemRemoved(position)
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
+
+            override fun onEditAmount(position: Int) {
+                val ingredient = stockList[position]
+                val input = EditText(this@ProductActivity)
+                input.hint = "Enter new amount"
+                input.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+
+                android.app.AlertDialog.Builder(this@ProductActivity)
+                    .setTitle("Edit Amount for ${ingredient.title}")
+                    .setView(input)
+                    .setPositiveButton("Update") { _, _ ->
+                        val newAmount = input.text.toString().toIntOrNull()
+                        if (newAmount != null) {
+                            ingredient.amountNeeded = newAmount
+                            stockAdapter.notifyItemChanged(position)
+                        } else {
+                            Toast.makeText(this@ProductActivity, "Invalid amount", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
+        })
+
         stockRecyclerView.adapter = stockAdapter
 
 
@@ -126,6 +162,8 @@ class ProductActivity : AppCompatActivity() {
                 // Asynchronously generate unique ID
                 generateUniqueId { newId ->
 
+                    val ingredientsMap = stockList.associate { it.title to it.amountNeeded }
+
                     val newProduct = ProductModel(
                         id = newId,
                         image = productImage,
@@ -134,12 +172,13 @@ class ProductActivity : AppCompatActivity() {
 
                     ref.child(newTitle).setValue(newProduct)
                         .addOnSuccessListener {
-                            Toast.makeText(this, "Product added successfully", Toast.LENGTH_SHORT).show()
-                            finish()  // Close activity after saving
+                            ref.child(newTitle).child("ingredients").setValue(ingredientsMap)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Product and ingredients saved", Toast.LENGTH_SHORT).show()
+                                    finish()
+                                }
                         }
-                        .addOnFailureListener { error ->
-                            Toast.makeText(this, "Failed to add product: ${error.message}", Toast.LENGTH_LONG).show()
-                        }
+
                 }
             } else {
                 // Existing product update logic stays the same...
@@ -157,13 +196,23 @@ class ProductActivity : AppCompatActivity() {
                         Toast.makeText(this, "Failed to update title", Toast.LENGTH_SHORT).show()
                     }
                 } else {
+                    val ingredientsMap = stockList.associate { it.title to it.amountNeeded }
+
                     val updates = mapOf(
                         "image" to productImage,
+                        "ingredients" to ingredientsMap
                     )
+
                     ref.child(productTitle).updateChildren(updates)
-                    Toast.makeText(this, "Product updated successfully", Toast.LENGTH_SHORT).show()
-                    finish()
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Product updated successfully", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Failed to update product", Toast.LENGTH_SHORT).show()
+                        }
                 }
+
             }
         }
 
@@ -287,7 +336,7 @@ class ProductActivity : AppCompatActivity() {
                         val stockModel = stockData.getValue(StockModel::class.java)
 
                         if (stockModel != null) {
-                            val title = if (stockModel.title.isNotBlank()) stockModel.title else stockTitle
+                            val title = stockModel.title?.takeIf { it.isNotBlank() } ?: stockTitle
 
                             stockList.add(
                                 StockUsageModel(

@@ -10,13 +10,21 @@ import com.bumptech.glide.Glide
 import com.example.myapplication.R
 import com.example.myapplication.ViewModels.StockUsageModel
 
-class StockUsageAdapter(private val items: List<StockUsageModel>) :
-    RecyclerView.Adapter<StockUsageAdapter.StockViewHolder>() {
+class StockUsageAdapter(
+    private val items: MutableList<StockUsageModel>,
+    private val listener: OnIngredientActionListener
+) : RecyclerView.Adapter<StockUsageAdapter.StockViewHolder>() {
+
+    interface OnIngredientActionListener {
+        fun onDelete(position: Int)
+        fun onEditAmount(position: Int)
+    }
 
     class StockViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val titleView: TextView = view.findViewById(R.id.titleTextView)
         val amountView: TextView = view.findViewById(R.id.amountTextView)
         val imageView: ImageView = view.findViewById(R.id.imageView)
+        val deleteButton: ImageView = view.findViewById(R.id.deleteButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StockViewHolder {
@@ -32,6 +40,14 @@ class StockUsageAdapter(private val items: List<StockUsageModel>) :
         Glide.with(holder.imageView.context)
             .load(stock.image)
             .into(holder.imageView)
+
+        holder.deleteButton.setOnClickListener {
+            listener.onDelete(position)
+        }
+
+        holder.amountView.setOnClickListener {
+            listener.onEditAmount(position)
+        }
     }
 
     override fun getItemCount() = items.size
