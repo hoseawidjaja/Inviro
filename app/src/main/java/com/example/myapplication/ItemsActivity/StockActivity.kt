@@ -105,7 +105,8 @@ class StockActivity : AppCompatActivity() {
             .load(stockImage)
 //            .placeholder(R.drawable.ic_image_ingredient_placeholder)
 //            .error(R.drawable.ic_image_ingredient_placeholder)
-            .skipMemoryCache(true)
+            .override(210, 210) // downsample large images
+//            .skipMemoryCache(true)
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .into(imagePreview)
 
@@ -216,6 +217,7 @@ class StockActivity : AppCompatActivity() {
                     stockImage = supabaseUrl
                     Glide.with(this@StockActivity)
                         .load(supabaseUrl)
+                        .override(210, 210) // downsample large images
                         .skipMemoryCache(true)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .into(imagePreview)

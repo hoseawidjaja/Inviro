@@ -1,6 +1,7 @@
 package com.example.myapplication.ItemsActivity
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -16,7 +17,10 @@ import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.example.myapplication.Misc.StockAdapter
 import com.example.myapplication.Misc.StockUsageAdapter
 import com.example.myapplication.Misc.SupabaseClient
@@ -35,6 +39,7 @@ import kotlin.random.Random
 import java.io.FileOutputStream
 import java.io.InputStream
 import kotlin.math.log
+import com.bumptech.glide.request.target.Target
 
 
 class ProductActivity : AppCompatActivity() {
@@ -135,13 +140,18 @@ class ProductActivity : AppCompatActivity() {
         titleEditText.setText(productTitle)
 
         // Load existing image if available
-        Glide.with(this@ProductActivity)
-            .load(productImage)
-//            .placeholder(R.drawable.ic_image_ingredient_placeholder)
-//            .error(R.drawable.ic_image_ingredient_placeholder)
-            .skipMemoryCache(true)
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .into(imagePreview)
+        if (productImage.isNotBlank()) {
+            Glide.with(this@ProductActivity)
+                .load(productImage)
+                .override(512, 512) // downsample large images
+                .placeholder(R.drawable.ic_image_ingredient_placeholder)
+                .error(R.drawable.ic_image_ingredient_placeholder)
+                .into(imagePreview)
+
+        } else {
+            imagePreview.setImageResource(R.drawable.ic_image_ingredient_placeholder)
+        }
+
 
         // Set up image upload button
         uploadImageButton.setOnClickListener {
@@ -382,7 +392,7 @@ class ProductActivity : AppCompatActivity() {
                     if (stock != null) {
                         stockList.add(
                             StockUsageModel(
-                                title = stock.title,
+                                title = stock.title?.takeIf { it.isNotBlank() } ?: ingredientName,
                                 image = stock.image,
                                 unit = stock.unit,
                                 amountNeeded = amount

@@ -35,8 +35,9 @@ class ProductFragment : Fragment() {
 
         adapter = ProductAdapter(productList) { selectedProduct ->
             val intent = Intent(requireContext(), ProductActivity::class.java)
-            intent.putExtra("stock_id", selectedProduct.id)
-            intent.putExtra("stock_title", selectedProduct.title)
+            intent.putExtra("product_id", selectedProduct.id)
+            intent.putExtra("product_title", selectedProduct.title)
+            intent.putExtra("product_image", selectedProduct.image)
             startActivity(intent)
         }
         recyclerView.adapter = adapter
@@ -44,8 +45,9 @@ class ProductFragment : Fragment() {
         addButton = view.findViewById(R.id.addStockButton)
         addButton.setOnClickListener {
             val intent = Intent(requireContext(), ProductActivity::class.java)
-            intent.putExtra("stock_id", "")
-            intent.putExtra("stock_title", "")
+            intent.putExtra("product_id", "")
+            intent.putExtra("product_title", "")
+            intent.putExtra("product_image", "")
             startActivity(intent)
         }
 
