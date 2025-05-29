@@ -6,4 +6,8 @@
     </style>
 
     <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
+
+    <!-- res/values/themes.xml -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar" />
+
 </resources>

@@ -4,8 +4,13 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.View
+import android.view.WindowManager
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -40,6 +45,7 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import kotlin.math.log
 import com.bumptech.glide.request.target.Target
+import com.example.myapplication.Misc.StockAutoCompleteAdapter
 
 
 class ProductActivity : AppCompatActivity() {
@@ -370,79 +376,135 @@ class ProductActivity : AppCompatActivity() {
         builder.setTitle("Add Ingredient")
 
         val inputLayout = layoutInflater.inflate(R.layout.dialog_add_ingredient, null)
-        val ingredientInput = inputLayout.findViewById<EditText>(R.id.ingredientNameEditText)
+        val ingredientInput = inputLayout.findViewById<AutoCompleteTextView>(R.id.ingredientNameEditText)
         val amountInput = inputLayout.findViewById<EditText>(R.id.amountEditText)
+
+        val ingredientsRef = FirebaseDatabase.getInstance().getReference("ingredients")
+
+        ingredientsRef.get().addOnSuccessListener { snapshot ->
+            val stockList = snapshot.children.mapNotNull { child ->
+                val fallbackKey = child.key ?: return@mapNotNull null
+                val stock = child.getValue(StockModel::class.java) ?: return@mapNotNull null
+
+                if (stock.title.isBlank()) stock.title = fallbackKey
+                stock
+            }
+
+            val adapter = StockAutoCompleteAdapter(context, stockList)
+            ingredientInput.setAdapter(adapter)
+            ingredientInput.threshold = 1
+
+            ingredientInput.post {
+                ingredientInput.dropDownWidth = ingredientInput.width
+                ingredientInput.setDropDownAnchor(ingredientInput.id)
+            }
+
+            var itemSelected = false
+
+            ingredientInput.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (!itemSelected && s?.length ?: 0 >= ingredientInput.threshold) {
+                        ingredientInput.showDropDown()
+                    }
+                }
+                override fun afterTextChanged(s: Editable?) {}
+            })
+
+            ingredientInput.setOnItemClickListener { _, _, position, _ ->
+                val selected = adapter.getItem(position)
+                ingredientInput.setText(selected?.title ?: "")
+                itemSelected = true
+            }
+        }
 
         builder.setView(inputLayout)
 
         builder.setPositiveButton("Add") { dialog, _ ->
-            val ingredientName = ingredientInput.text.toString().trim()
-            val amount = amountInput.text.toString().toIntOrNull()
 
-            if (ingredientName.isEmpty() || amount == null) {
-                Toast.makeText(context, "Please enter valid name and amount", Toast.LENGTH_SHORT).show()
+            val ingredientName = ingredientInput.text.toString().trim()
+            val amountStr = amountInput.text.toString().trim()
+            val amount = amountStr.toIntOrNull()
+
+            if (ingredientName.isEmpty() || amount == null || amount <= 0) {
+                Toast.makeText(context, "Please enter valid ingredient name and amount", Toast.LENGTH_SHORT).show()
                 return@setPositiveButton
             }
 
-            val ingredientsRef = FirebaseDatabase.getInstance().getReference("ingredients")
-            ingredientsRef.child(ingredientName).get().addOnSuccessListener { snapshot ->
-                if (snapshot.exists()) {
-                    // Ingredient exists, add to RecyclerView
-                    val stock = snapshot.getValue(StockModel::class.java)
-                    if (stock != null) {
-                        stockList.add(
-                            StockUsageModel(
-                                title = stock.title?.takeIf { it.isNotBlank() } ?: ingredientName,
-                                image = stock.image,
-                                unit = stock.unit,
-                                amountNeeded = amount
-                            )
+            val adapter = ingredientInput.adapter as? StockAutoCompleteAdapter
+            val matchedStock = adapter?.items?.find { it.title.equals(ingredientName, ignoreCase = true) }
+
+            if (matchedStock == null) {
+                // Ingredient not found — confirm create new
+                android.app.AlertDialog.Builder(context)
+                    .setTitle("Create New Ingredient")
+                    .setMessage("Ingredient \"$ingredientName\" does not exist. Do you want to create it?")
+                    .setPositiveButton("Yes") { confirmDialog, _ ->
+                        // Create ingredient with default values
+                        val newStock = StockModel(
+                            id = ingredientName,
+                            title = ingredientName,
+                            stock = 0,
+                            unit = "pcs",
+                            image = ""
                         )
-                        stockAdapter.notifyDataSetChanged()
-                    }
-                } else {
-                    // Ingredient doesn't exist
-                    val confirmBuilder = android.app.AlertDialog.Builder(context)
-                    confirmBuilder.setTitle("Create New Ingredient?")
-                    confirmBuilder.setMessage("Ingredient \"$ingredientName\" does not exist. Create it?")
 
-                    confirmBuilder.setPositiveButton("Yes") { _, _ ->
-                        generateUniqueId { newId ->
-                            val newStock = StockModel(
-                                id = newId,
-                                title = ingredientName,
-                                stock = 0,
-                                unit = "pcs",
-                                image = ""
-                            )
-
-                            ingredientsRef.child(ingredientName).setValue(newStock).addOnSuccessListener {
-                                stockList.add(
-                                    StockUsageModel(
-                                        title = newStock.title,
-                                        image = newStock.image,
-                                        unit = newStock.unit,
-                                        amountNeeded = amount
-                                    )
+                        ingredientsRef.child(ingredientName).setValue(newStock).addOnSuccessListener {
+                            // Add to stockList and notify adapter
+                            stockList.add(
+                                StockUsageModel(
+                                    title = ingredientName,
+                                    image = "",
+                                    unit = "pcs",
+                                    amountNeeded = amount
                                 )
-                                stockAdapter.notifyDataSetChanged()
-                                Toast.makeText(context, "Ingredient created", Toast.LENGTH_SHORT).show()
-                            }
+                            )
+                            stockAdapter.notifyItemInserted(stockList.size - 1)
+                            Toast.makeText(context, "Ingredient \"$ingredientName\" created and added.", Toast.LENGTH_SHORT).show()
+                        }.addOnFailureListener {
+                            Toast.makeText(context, "Failed to create ingredient", Toast.LENGTH_SHORT).show()
                         }
 
+                        confirmDialog.dismiss()
+                        dialog.dismiss()
                     }
-                    confirmBuilder.setNegativeButton("No", null)
-                    confirmBuilder.show()
+                    .setNegativeButton("No") { confirmDialog, _ ->
+                        confirmDialog.dismiss()
+                    }
+                    .show()
+            } else {
+                // Ingredient exists - check duplicate in stockList
+                if (stockList.any { it.title.equals(matchedStock.title, ignoreCase = true) }) {
+                    Toast.makeText(context, "${matchedStock.title} is already added", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
                 }
-            }
 
-            dialog.dismiss()
+                // Add existing ingredient
+                stockList.add(
+                    StockUsageModel(
+                        title = matchedStock.title,
+                        image = matchedStock.image,
+                        unit = matchedStock.unit,
+                        amountNeeded = amount
+                    )
+                )
+                stockAdapter.notifyItemInserted(stockList.size - 1)
+
+                // Clear inputs
+                ingredientInput.setText("")
+                amountInput.setText("")
+
+                dialog.dismiss()
+            }
         }
 
         builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
 
-        builder.show()
+        val dialog = builder.create()
+        dialog.show()
     }
+
+
 
 }
 
