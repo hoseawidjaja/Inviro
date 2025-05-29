@@ -266,4 +266,3 @@ class StockActivity : AppCompatActivity() {
     }
 
 }
-

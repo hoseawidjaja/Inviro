@@ -55,6 +55,9 @@ class SalesActivity : NavActivity() {
                     val salesModel = SalesModel(date, menu)
                     salesList.add(salesModel)
                 }
+                // 🔽 SORT BY DATE DESCENDING (newest first)
+                salesList.sortByDescending { it.date }
+
                 adapter.notifyDataSetChanged()  // Update RecyclerView
             }
 
@@ -74,6 +77,15 @@ class SalesActivity : NavActivity() {
             alertDialog.show()
 
             val dateInput = dialogView.findViewById<EditText>(R.id.input_date)
+            // Set today's date as default
+            val today = Calendar.getInstance()
+            val year = today.get(Calendar.YEAR)
+            val month = today.get(Calendar.MONTH)
+            val day = today.get(Calendar.DAY_OF_MONTH)
+
+            val formattedToday = String.format("%04d-%02d-%02d", year, month + 1, day)
+            dateInput.setText(formattedToday)
+
             val menuInput = dialogView.findViewById<EditText>(R.id.input_menu_name)
             val quantityInput = dialogView.findViewById<EditText>(R.id.input_quantity)
             val submitBtn = dialogView.findViewById<Button>(R.id.submit_sale_btn)
