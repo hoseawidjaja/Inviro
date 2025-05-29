@@ -1,9 +1,11 @@
 package com.example.myapplication.MainActivity
 
+import ProductAutoCompleteAdapter
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -16,6 +18,7 @@ import com.example.myapplication.Misc.NavActivity
 import com.example.myapplication.Misc.SalesAdapter
 import com.example.myapplication.Misc.StockAdapter
 import com.example.myapplication.R
+import com.example.myapplication.ViewModels.ProductModel
 import com.example.myapplication.ViewModels.SalesModel
 import com.example.myapplication.ViewModels.StockModel
 import com.google.firebase.database.*
@@ -86,9 +89,38 @@ class SalesActivity : NavActivity() {
             val formattedToday = String.format("%04d-%02d-%02d", year, month + 1, day)
             dateInput.setText(formattedToday)
 
-            val menuInput = dialogView.findViewById<EditText>(R.id.input_menu_name)
             val quantityInput = dialogView.findViewById<EditText>(R.id.input_quantity)
             val submitBtn = dialogView.findViewById<Button>(R.id.submit_sale_btn)
+
+            val menuInput = dialogView.findViewById<AutoCompleteTextView>(R.id.input_menu_name)
+
+// Load product list from Firebase or hardcode from your JSON
+            val productList = mutableListOf<ProductModel>()
+            val productsRef = FirebaseDatabase.getInstance().getReference("menu")
+
+            productsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    productList.clear()
+                    for (productSnap in snapshot.children) {
+                        val product = productSnap.getValue(ProductModel::class.java)
+                        if (product != null) {
+                            // Default to key as title if title is empty
+                            if (product.title.isEmpty()) {
+                                product.title = productSnap.key ?: ""
+                            }
+                            productList.add(product)
+                        }
+                    }
+
+                    val adapter = ProductAutoCompleteAdapter(this@SalesActivity, productList)
+                    menuInput.setAdapter(adapter)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // handle error
+                }
+            })
+
 
             // Set up date picker
             dateInput.setOnClickListener {

@@ -38,7 +38,7 @@
             android:layout_marginBottom="12dp" />
 
         <!-- Menu Item -->
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/input_menu_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

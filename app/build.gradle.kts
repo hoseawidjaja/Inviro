@@ -64,4 +64,6 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.gson)
 
+
+    implementation ("com.squareup.picasso:picasso:2.8")
 }
