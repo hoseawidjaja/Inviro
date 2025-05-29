@@ -139,17 +139,67 @@ class SalesActivity : NavActivity() {
 
             submitBtn.setOnClickListener {
                 val date = dateInput.text.toString().trim()
-                val menuItem = menuInput.text.toString().trim()
+                val menuItemName = menuInput.text.toString().trim()
                 val quantity = quantityInput.text.toString().trim().toIntOrNull() ?: 0
 
-                if (date.isNotEmpty() && menuItem.isNotEmpty()) {
-                    val salesRef = FirebaseDatabase.getInstance().getReference("sales")
-                    salesRef.child(date).child(menuItem).setValue(quantity)
-                        .addOnSuccessListener {
-                            alertDialog.dismiss()
-                        }
+                if (date.isNotEmpty() && menuItemName.isNotEmpty() && quantity > 0) {
+                    val database = FirebaseDatabase.getInstance()
+                    val salesRef = database.getReference("sales")
+                    val menuRef = database.getReference("menu")
+                    val ingredientsRef = database.getReference("ingredients")
+
+                    // Step 1: Record the sale
+                    salesRef.child(date).child(menuItemName)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val existingQuantity = snapshot.getValue(Int::class.java) ?: 0
+                                val newTotal = existingQuantity + quantity
+
+                                salesRef.child(date).child(menuItemName).setValue(newTotal)
+                                    .addOnSuccessListener {
+                                        alertDialog.dismiss()
+
+                                        // Now handle ingredient deduction as before
+                                        menuRef.child(menuItemName)
+                                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                                override fun onDataChange(snapshot: DataSnapshot) {
+                                                    val product = snapshot.getValue(ProductModel::class.java)
+                                                    if (product != null && product.ingredients.isNotEmpty()) {
+                                                        for ((ingredientName, amountPerItem) in product.ingredients) {
+                                                            val totalUsed = amountPerItem * quantity
+
+                                                            ingredientsRef.child(ingredientName).child("stock")
+                                                                .addListenerForSingleValueEvent(object : ValueEventListener {
+                                                                    override fun onDataChange(stockSnap: DataSnapshot) {
+                                                                        val currentStock = stockSnap.getValue(Int::class.java) ?: 0
+                                                                        val newStock = (currentStock - totalUsed).coerceAtLeast(0)
+
+                                                                        ingredientsRef.child(ingredientName).child("stock")
+                                                                            .setValue(newStock)
+                                                                    }
+
+                                                                    override fun onCancelled(error: DatabaseError) {
+                                                                        // Handle error
+                                                                    }
+                                                                })
+                                                        }
+                                                    }
+                                                }
+
+                                                override fun onCancelled(error: DatabaseError) {
+                                                    // Handle error
+                                                }
+                                            })
+                                    }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                // Handle error
+                            }
+                        })
                 }
             }
+
         }
 
     }
