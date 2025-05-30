@@ -9,6 +9,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,6 +34,10 @@ class SalesActivity : NavActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sales_date_page)
+
+        val salesDateTextView = findViewById<TextView>(R.id.salesDate)
+        val currentDate = java.text.SimpleDateFormat("EEEE, d MMMM yyyy", java.util.Locale.getDefault())
+        salesDateTextView.text = currentDate.format(java.util.Date())
 
         // RecyclerView setup
         recyclerView = findViewById(R.id.salesRecyclerView)
