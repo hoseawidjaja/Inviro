@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 
 class SignupTabFragment : Fragment() {
 
-    private lateinit var auth: FirebaseAuth
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,41 +26,47 @@ class SignupTabFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_signup_tab, container, false)
 
-        auth = FirebaseAuth.getInstance()
+        val emailEt = view.findViewById<EditText>(R.id.etEmailSignup)
+        val passEt = view.findViewById<EditText>(R.id.etPasswordSignup)
+        val confirmPassEt = view.findViewById<EditText>(R.id.signup_confirm)
+        val signupBtn = view.findViewById<Button>(R.id.btnSignup)
 
-        val emailEditText = view.findViewById<EditText>(R.id.etEmailSignup)
-        val passwordEditText = view.findViewById<EditText>(R.id.etPasswordSignup)
-        val signupButton = view.findViewById<Button>(R.id.btnSignup)
+        firebaseAuth = FirebaseAuth.getInstance()
 
-        signupButton.setOnClickListener {
-            val email = emailEditText.text.toString().trim()
-            val password = passwordEditText.text.toString().trim()
+        signupBtn.setOnClickListener {
+            val email = emailEt.text.toString().trim()
+            val password = passEt.text.toString().trim()
+            val confirmPassword = confirmPassEt.text.toString().trim()
 
-            // Basic input validation
+            if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                Toast.makeText(requireContext(), "Fields cannot be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(requireContext(), "Please enter a valid email.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Invalid email format", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            if (password.length < 6) {
-                Toast.makeText(requireContext(), "Password must be at least 6 characters.", Toast.LENGTH_SHORT).show()
+            if (password != confirmPassword) {
+                Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Firebase sign up
-            auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(requireActivity()) { task ->
+            firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        Toast.makeText(requireContext(), "Signup successful", Toast.LENGTH_SHORT).show()
                         val intent = Intent(requireActivity(), HomeActivity::class.java)
                         startActivity(intent)
                         requireActivity().finish()
                     } else {
-                        val message = when (val e = task.exception) {
-                            is FirebaseAuthUserCollisionException -> "This email is already registered."
-                            is FirebaseAuthWeakPasswordException -> "Weak password: ${e.reason}"
-                            else -> "Sign-Up failed: ${e?.localizedMessage}"
+                        val errorMessage = when (val exception = task.exception) {
+                            is FirebaseAuthWeakPasswordException -> "Weak password: ${exception.reason}"
+                            is FirebaseAuthUserCollisionException -> "This email is already registered"
+                            else -> exception?.message ?: "Signup failed"
                         }
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
         }

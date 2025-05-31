@@ -2,7 +2,6 @@ package com.example.myapplication.Misc
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +11,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.myapplication.MainActivity.HomeActivity
 import com.example.myapplication.R
-import com.google.firebase.auth.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 
 class LoginTabFragment : Fragment() {
 
-    private lateinit var auth: FirebaseAuth
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var emailEt: EditText
+    private lateinit var passEt: EditText
+    private lateinit var loginButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,46 +26,40 @@ class LoginTabFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_login_tab, container, false)
 
-        auth = FirebaseAuth.getInstance()
+        firebaseAuth = FirebaseAuth.getInstance()
 
-        val emailEditText = view.findViewById<EditText>(R.id.etEmail)
-        val passwordEditText = view.findViewById<EditText>(R.id.etPassword)
-        val loginButton = view.findViewById<Button>(R.id.btnLogin)
+        emailEt = view.findViewById(R.id.etEmail)
+        passEt = view.findViewById(R.id.etPassword)
+        loginButton = view.findViewById(R.id.btnLogin)
 
         loginButton.setOnClickListener {
-            val email = emailEditText.text.toString().trim()
-            val password = passwordEditText.text.toString().trim()
+            val email = emailEt.text.toString()
+            val pass = passEt.text.toString()
 
-            // Basic input validation
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(requireContext(), "Please enter a valid email.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            if (password.length < 6) {
-                Toast.makeText(requireContext(), "Password must be at least 6 characters.", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            // Firebase sign in
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(requireActivity()) { task ->
-                    if (task.isSuccessful) {
-                        val intent = Intent(requireActivity(), HomeActivity::class.java)
+            if (email.isNotEmpty() && pass.isNotEmpty()) {
+                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        val intent = Intent(requireContext(), HomeActivity::class.java)
                         startActivity(intent)
                         requireActivity().finish()
                     } else {
-                        val errorMessage = when (val e = task.exception) {
-                            is FirebaseAuthInvalidUserException -> "No account with this email."
-                            is FirebaseAuthInvalidCredentialsException -> "Incorrect password."
-                            is FirebaseAuthException -> "Authentication error: ${e.message}"
-                            else -> "Login failed: ${e?.localizedMessage}"
-                        }
-                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), it.exception?.message, Toast.LENGTH_SHORT).show()
                     }
                 }
+            } else {
+                Toast.makeText(requireContext(), "Empty fields are not allowed!", Toast.LENGTH_SHORT).show()
+            }
         }
 
         return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (firebaseAuth.currentUser != null) {
+            val intent = Intent(requireContext(), HomeActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
+        }
     }
 }
