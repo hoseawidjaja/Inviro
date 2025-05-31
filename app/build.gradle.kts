@@ -45,27 +45,25 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.glide)
+    implementation(libs.gson)
+    implementation(libs.junit)
+    implementation(libs.androidx.junit)
+    implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.database.ktx)
     implementation(libs.car.ui.lib)
-    implementation(libs.firebase.storage.ktx)
-    implementation(libs.play.services.base)
-    implementation(libs.play.services.base)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.storage.ktx)
     implementation(libs.supabase.kt)
+    implementation(libs.play.services.base)
     implementation(libs.okhttp)
+    implementation("com.squareup.picasso:picasso:2.8")
 
 
 
-    implementation(libs.glide)
-    implementation(libs.gson)
 
-
-    implementation ("com.squareup.picasso:picasso:2.8")
 
     implementation ("com.google.android.material:material:1.11.0") // or latest stable
     
