@@ -60,12 +60,8 @@ dependencies {
     implementation(libs.play.services.base)
     implementation(libs.okhttp)
     implementation("com.squareup.picasso:picasso:2.8")
-
-
-
-
-
-    implementation ("com.google.android.material:material:1.11.0") // or latest stable
+    implementation ("com.google.android.material:material:1.11.0")
+    implementation(libs.firebase.auth.ktx) // or latest stable
     
 
 }
