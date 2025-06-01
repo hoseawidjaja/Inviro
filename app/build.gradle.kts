@@ -64,7 +64,7 @@ dependencies {
     implementation(libs.firebase.auth.ktx) // or latest stable
     implementation ("com.google.android.gms:play-services-auth:21.0.0")
     implementation ("com.google.firebase:firebase-auth:22.3.0")
-
+    implementation(libs.firebase.firestore.ktx)
 
 
 }

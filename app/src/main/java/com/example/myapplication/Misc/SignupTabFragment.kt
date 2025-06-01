@@ -11,10 +11,12 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.example.myapplication.MainActivity.HomeActivity
 import com.example.myapplication.R
+import com.example.myapplication.ViewModels.UserProfileModel
 import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.*
+import com.google.firebase.firestore.FirebaseFirestore
 
 class SignupTabFragment : Fragment() {
 
@@ -58,6 +60,8 @@ class SignupTabFragment : Fragment() {
             firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        firebaseAuth.currentUser?.let { saveUserProfileToFirestore(it) }
+
                         startHomeActivity()
                     } else {
                         val errorMessage = when (val exception = task.exception) {
@@ -72,6 +76,21 @@ class SignupTabFragment : Fragment() {
 
         return view
     }
+
+    private fun saveUserProfileToFirestore(user: FirebaseUser) {
+        val db = FirebaseFirestore.getInstance()
+        val userProfile = UserProfileModel(
+            username = "",
+            email = user.email ?: "",
+            address = "",
+            dob = "",
+            phone = ""
+        )
+
+        db.collection("users").document(user.uid).set(userProfile)
+    }
+
+
 
     private fun startHomeActivity() {
         Toast.makeText(requireContext(), "Signup successful", Toast.LENGTH_SHORT).show()
