@@ -107,7 +107,6 @@ class SalesActivity : NavActivity() {
 // Load product list from Firebase or hardcode from your JSON
             val productList = mutableListOf<ProductModel>()
             val uid = firebaseAuth.currentUser?.uid ?: return@setOnClickListener
-            val ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("ingredients")
             val productsRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("menu")
 
             productsRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -157,7 +156,6 @@ class SalesActivity : NavActivity() {
                 if (date.isNotEmpty() && menuItemName.isNotEmpty() && quantity > 0) {
                     val database = FirebaseDatabase.getInstance()
                     val uid = firebaseAuth.currentUser?.uid ?: return@setOnClickListener
-                    val ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("ingredients")
                     val salesRef = database.getReference("users").child(uid).child("sales")
                     val menuRef = database.getReference("users").child(uid).child("menu")
                     val ingredientsRef = database.getReference("users").child(uid).child("ingredients")

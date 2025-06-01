@@ -3,6 +3,8 @@ package com.example.myapplication.MainActivity
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,11 +18,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.GenericTypeIndicator
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
@@ -36,36 +34,58 @@ class ReportActivity : NavActivity() {
 
         chart = findViewById(R.id.lineChart)
         viewModel = ViewModelProvider(this)[ReportViewModel::class.java]
+        val menuInput = findViewById<AutoCompleteTextView>(R.id.dropdown_report)
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) {
-            Log.e("ReportActivity", "No user logged in. Cannot load sales data.")
-            // Optionally: show an error or redirect to login
+            Log.e("ReportActivity", "No user logged in.")
             return
         }
 
         val userId = currentUser.uid
 
-        // Load sales from current user's node in Realtime Database
         loadSalesFromRealtimeDatabase(userId) { salesData ->
             val topItems = getTop5ItemsFromLast7Days(salesData)
 
+            // Setup recycler
             val recycler = findViewById<RecyclerView>(R.id.ingredientMenuRecycler)
             recycler.layoutManager = LinearLayoutManager(this)
-
-            val adapter = ItemAdapter(topItems) { title ->
-                viewModel.loadSalesForItem(title, salesData)
+            val itemAdapter = ItemAdapter(topItems) { item ->
+                viewModel.loadSalesForItem(item, salesData)
             }
-            recycler.adapter = adapter
+            recycler.adapter = itemAdapter
 
             if (topItems.isNotEmpty()) {
-                adapter.selectedItem = topItems[0]
+                itemAdapter.selectedItem = topItems[0]
                 viewModel.loadSalesForItem(topItems[0], salesData)
             }
 
             viewModel.selectedItemSales.observe(this) { salesList ->
-                val selectedItem = adapter.selectedItem ?: return@observe
+                val selectedItem = itemAdapter.selectedItem ?: return@observe
                 updateChart(salesList, selectedItem)
+            }
+
+            // Load menu items into dropdown
+            loadMenuItems(userId) { menuList ->
+                val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, menuList)
+                menuInput.setAdapter(adapter)
+
+                menuInput.setOnItemClickListener { _, _, position, _ ->
+                    val selectedItem = adapter.getItem(position) ?: return@setOnItemClickListener
+                    itemAdapter.selectedItem = selectedItem
+                    viewModel.loadSalesForItem(selectedItem, salesData)
+                }
+
+                // Also handle text typed in manually (after dropdown closes)
+                menuInput.setOnDismissListener {
+                    val enteredText = menuInput.text.toString().trim()
+                    if (enteredText in menuList) {
+                        itemAdapter.selectedItem = enteredText
+                        viewModel.loadSalesForItem(enteredText, salesData)
+                    } else {
+                        Log.d("ReportActivity", "Typed menu item '$enteredText' not found in menu.")
+                    }
+                }
             }
         }
     }
@@ -75,65 +95,54 @@ class ReportActivity : NavActivity() {
         val displayFormatter = DateTimeFormatter.ofPattern("MM-dd")
         val today = LocalDate.now()
 
-        // Prepare dates for the past 7 days (including today)
         val last7Days = (6 downTo 0).map { today.minusDays(it.toLong()) }
 
-        // Map dates to quantities, default 0 if missing
         val quantities = last7Days.map { date ->
             salesList.find { it.date == date.format(formatter) }?.menu?.get(item) ?: 0
         }
 
-        // Create entries with X = index and Y = quantity
         val lineEntries = quantities.mapIndexed { index, qty ->
             Entry(index.toFloat(), qty.toFloat())
         }
 
-        val dataSet = LineDataSet(lineEntries, "Sales for $item")
-        dataSet.color = Color.GREEN
-        dataSet.valueTextColor = Color.BLACK
+        val dataSet = LineDataSet(lineEntries, "Sales for $item").apply {
+            color = Color.GREEN
+            valueTextColor = Color.BLACK
+        }
 
-        val lineData = LineData(dataSet)
-        chart.data = lineData
+        chart.data = LineData(dataSet)
 
-        // Set X axis labels to dates (MM-dd)
-        val xAxis = chart.xAxis
-        xAxis.valueFormatter = IndexAxisValueFormatter(last7Days.map { it.format(displayFormatter) })
-        xAxis.granularity = 1f
-        xAxis.position = com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM
+        chart.xAxis.apply {
+            valueFormatter = IndexAxisValueFormatter(last7Days.map { it.format(displayFormatter) })
+            granularity = 1f
+            position = com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM
+        }
 
-        // Configure Y axis min and max
-        val maxQty = quantities.maxOrNull() ?: 0
-        val leftAxis = chart.axisLeft
-        leftAxis.axisMinimum = 0f
-        leftAxis.axisMaximum = (maxQty + 2).toFloat() // add some padding
+        chart.axisLeft.apply {
+            axisMinimum = 0f
+            axisMaximum = (quantities.maxOrNull() ?: 0 + 2).toFloat()
+        }
 
-        // Optional: disable right Y axis
         chart.axisRight.isEnabled = false
-
         chart.invalidate()
     }
 
-    // Modified to accept userId and read sales under /users/{userId}/sales
     private fun loadSalesFromRealtimeDatabase(userId: String, callback: (Map<String, SalesModel>) -> Unit) {
-        val database = FirebaseDatabase.getInstance()
-        val salesRef = database.getReference("users").child(userId).child("sales")
-
-        salesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        val ref = FirebaseDatabase.getInstance().getReference("users/$userId/sales")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val salesMap = mutableMapOf<String, SalesModel>()
-
                 for (dateSnapshot in snapshot.children) {
                     val date = dateSnapshot.key ?: continue
                     val productsMap = dateSnapshot.getValue(object : GenericTypeIndicator<Map<String, Int>>() {}) ?: continue
                     salesMap[date] = SalesModel(date, productsMap)
                 }
-
-                callback(salesMap)  // Return data to caller
+                callback(salesMap)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("ReportActivity", "Failed to fetch sales data: ${error.message}")
-                callback(emptyMap()) // Return empty map on failure
+                Log.e("ReportActivity", "Error loading sales: ${error.message}")
+                callback(emptyMap())
             }
         })
     }
@@ -143,10 +152,10 @@ class ReportActivity : NavActivity() {
         val today = LocalDate.now()
         val oneWeekAgo = today.minusDays(7)
 
-        val recentSales = salesData
-            .filterKeys { dateStr ->
+        return salesData
+            .filterKeys {
                 try {
-                    val date = LocalDate.parse(dateStr, formatter)
+                    val date = LocalDate.parse(it, formatter)
                     !date.isBefore(oneWeekAgo) && !date.isAfter(today)
                 } catch (e: Exception) {
                     false
@@ -159,7 +168,23 @@ class ReportActivity : NavActivity() {
             .sortedByDescending { it.second }
             .take(5)
             .map { it.first }
+    }
 
-        return recentSales
+    private fun loadMenuItems(userId: String, callback: (List<String>) -> Unit) {
+        val ref = FirebaseDatabase.getInstance().getReference("users/$userId/menu")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val items = mutableListOf<String>()
+                for (child in snapshot.children) {
+                    child.key?.let { items.add(it) }
+                }
+                callback(items)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("ReportActivity", "Error loading menu: ${error.message}")
+                callback(emptyList())
+            }
+        })
     }
 }

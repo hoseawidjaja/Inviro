@@ -282,6 +282,17 @@
                     android:scrollbars="vertical"
                     app:layout_constraintTop_toBottomOf="@id/lineChart"/>
 
+                <!-- Menu Item -->
+                <AutoCompleteTextView
+                    android:id="@+id/dropdown_report"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Menu Item"
+                    android:inputType="text"
+                    android:background="@drawable/edit_text_background"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp" />
+
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
