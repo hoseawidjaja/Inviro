@@ -13,6 +13,7 @@ import com.example.myapplication.MainActivity.HomeActivity
 import com.example.myapplication.MainActivity.ReportActivity
 import com.example.myapplication.MainActivity.SalesActivity
 import com.example.myapplication.MainActivity.ManagementActivity
+import com.example.myapplication.MainActivity.ProfileActivity
 import com.example.myapplication.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -76,6 +77,14 @@ open class NavActivity : AppCompatActivity() {
                     }
                     true
                 }
+                R.id.nav_profile -> {
+                    if (this !is ProfileActivity) {
+                        startActivity(Intent(this, ProfileActivity::class.java))
+                        finish()
+                    }
+                    true
+                }
+
 
                 else -> false
             }
@@ -88,9 +97,8 @@ open class NavActivity : AppCompatActivity() {
         }
 
         val profile = findViewById<ImageView>(R.id.profile_button)
-        //TODO: ini dijadiin profile pas menunya udah ada
         profile.setOnClickListener {
-            startActivity(Intent(this, ReportActivity::class.java))
+            startActivity(Intent(this, ProfileActivity::class.java))
             finish()
         }
 
@@ -101,6 +109,7 @@ open class NavActivity : AppCompatActivity() {
             is ReportActivity -> R.id.nav_report
             is ManagementActivity -> R.id.nav_stock
             is SalesActivity -> R.id.nav_menu
+            is ProfileActivity -> R.id.nav_profile
             else -> 0
         }
 

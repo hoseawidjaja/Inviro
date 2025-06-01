@@ -66,6 +66,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ItemsActivity.StockModelActivity" />
+        <activity android:name=".MainActivity.ProfileActivity" />
     </application>
 
 </manifest>
