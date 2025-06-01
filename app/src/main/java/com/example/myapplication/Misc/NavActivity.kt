@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.example.myapplication.MainActivity.HomeActivity
 import com.example.myapplication.MainActivity.ReportActivity
 import com.example.myapplication.MainActivity.SalesActivity
@@ -100,6 +101,19 @@ open class NavActivity : AppCompatActivity() {
         profile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
             finish()
+        }
+
+        // Load profile image from FirebaseAuth
+        val currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+        if (currentUser != null && currentUser.photoUrl != null) {
+            Glide.with(this)
+                .load(currentUser.photoUrl)
+                .placeholder(R.drawable.ic_image_ingredient_placeholder) // fallback image
+                .error(R.drawable.ic_image_ingredient_placeholder) // error image
+                .circleCrop() // make it round
+                .into(profile)
+        } else {
+            profile.setImageResource(R.drawable.ic_image_ingredient_placeholder)
         }
 
 

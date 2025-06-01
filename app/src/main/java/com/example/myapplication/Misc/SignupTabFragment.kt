@@ -79,15 +79,20 @@ class SignupTabFragment : Fragment() {
 
     private fun saveUserProfileToFirestore(user: FirebaseUser) {
         val db = FirebaseFirestore.getInstance()
-        val userProfile = UserProfileModel(
-            username = "",
-            email = user.email ?: "",
-            address = "",
-            dob = "",
-            phone = ""
-        )
+        val userDocRef = db.collection("users").document(user.uid)
 
-        db.collection("users").document(user.uid).set(userProfile)
+        userDocRef.get().addOnSuccessListener { document ->
+            if (!document.exists()) {
+                val userProfile = UserProfileModel(
+                    username = user.displayName ?: "",
+                    email = user.email ?: "",
+                    address = "",
+                    dob = "",
+                    phone = ""
+                )
+                userDocRef.set(userProfile)
+            }
+        }
     }
 
 

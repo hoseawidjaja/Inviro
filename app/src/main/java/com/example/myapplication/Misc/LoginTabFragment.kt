@@ -63,7 +63,6 @@ class LoginTabFragment : Fragment() {
             if (email.isNotEmpty() && pass.isNotEmpty()) {
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
-                        firebaseAuth.currentUser?.let { saveUserProfileToFirestore(it) }
                         startHomeActivity()
                     } else {
                         Toast.makeText(requireContext(), it.exception?.message, Toast.LENGTH_SHORT).show()
@@ -108,18 +107,6 @@ class LoginTabFragment : Fragment() {
             }
     }
 
-    private fun saveUserProfileToFirestore(user: FirebaseUser) {
-        val db = FirebaseFirestore.getInstance()
-        val userProfile = UserProfileModel(
-            username = user.displayName ?: "", // fallback if Google doesn't provide a name
-            email = user.email ?: "",
-            address = "",
-            dob = "",
-            phone = ""
-        )
-
-        db.collection("users").document(user.uid).set(userProfile)
-    }
 
     private fun startHomeActivity() {
         Toast.makeText(requireContext(), "Login successful", Toast.LENGTH_SHORT).show()
