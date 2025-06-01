@@ -1,20 +1,28 @@
 package com.example.myapplication.MainActivity
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import com.example.myapplication.Misc.NavActivity
 import com.example.myapplication.R
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class HomeActivity : NavActivity() {
 
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
-
+    private lateinit var barChart: BarChart
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +31,16 @@ class HomeActivity : NavActivity() {
 
         database = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
+        barChart = findViewById(R.id.menuBarChart)
+
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val userId = currentUser.uid
+            loadWeeklyMenuSales(userId) { menuSales ->
+                updateMenuBarChart(menuSales)
+            }
+        }
+
 
         fetchDataAndCalculateStatus()
         gotoNotifs()
@@ -116,4 +134,82 @@ class HomeActivity : NavActivity() {
             finish()
         }
     }
+
+    private fun loadWeeklyMenuSales(userId: String, callback: (Map<String, Int>) -> Unit) {
+        val ref = FirebaseDatabase.getInstance().getReference("users/$userId/sales")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val today = LocalDate.now()
+        val oneWeekAgo = today.minusDays(6)
+
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val menuSales = mutableMapOf<String, Int>()
+
+                for (dateSnapshot in snapshot.children) {
+                    val date = dateSnapshot.key ?: continue
+                    try {
+                        val localDate = LocalDate.parse(date, formatter)
+                        if (localDate.isBefore(oneWeekAgo) || localDate.isAfter(today)) continue
+                    } catch (e: Exception) {
+                        continue
+                    }
+
+                    val dailySales = dateSnapshot.getValue(object : GenericTypeIndicator<Map<String, Int>>() {}) ?: continue
+                    for ((menuItem, qty) in dailySales) {
+                        menuSales[menuItem] = menuSales.getOrDefault(menuItem, 0) + qty
+                    }
+                }
+
+                callback(menuSales)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("HomeActivity", "Error loading weekly menu sales: ${error.message}")
+                callback(emptyMap())
+            }
+        })
+    }
+
+    private fun updateMenuBarChart(menuSales: Map<String, Int>) {
+        if (menuSales.isEmpty()) return
+
+        val entries = menuSales.entries.mapIndexed { index, entry ->
+            BarEntry(index.toFloat(), entry.value.toFloat())
+        }
+
+        val labels = menuSales.keys.toList()
+
+        val dataSet = BarDataSet(entries, "Weekly Menu Sales").apply {
+            color = Color.rgb(104, 241, 175)
+            valueTextColor = Color.BLACK
+            valueTextSize = 12f
+        }
+
+        val barData = BarData(dataSet)
+        barData.barWidth = 0.35f
+        barChart.data = barData
+
+        barChart.xAxis.apply {
+            valueFormatter = IndexAxisValueFormatter(labels)
+            granularity = 1f
+            labelCount = labels.size
+            setDrawLabels(true)
+            labelRotationAngle = 0f      // ⬅ Keep labels horizontal
+            textSize = 9f                // ⬅ Slightly smaller text
+            position = com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM
+            setAvoidFirstLastClipping(true)
+            spaceMin = 0.5f
+            spaceMax = 0.5f
+            axisMinimum = - 0.5f
+            axisMaximum = labels.size - 0.5f
+        }
+
+
+        barChart.axisLeft.axisMinimum = 0f
+        barChart.axisRight.isEnabled = false
+        barChart.description.isEnabled = false
+
+        barChart.invalidate()
+    }
+
 }
