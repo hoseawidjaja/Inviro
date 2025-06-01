@@ -47,6 +47,7 @@ class ReportActivity : NavActivity() {
         loadSalesFromRealtimeDatabase(userId) { salesData ->
             val topItems = getTop5ItemsFromLast7Days(salesData)
 
+            val maxQtyPastWeek = getMaxQuantityPast7Days(salesData)
             // Setup recycler
             val recycler = findViewById<RecyclerView>(R.id.ingredientMenuRecycler)
             recycler.layoutManager = LinearLayoutManager(this)
@@ -62,7 +63,7 @@ class ReportActivity : NavActivity() {
 
             viewModel.selectedItemSales.observe(this) { salesList ->
                 val selectedItem = itemAdapter.selectedItem ?: return@observe
-                updateChart(salesList, selectedItem)
+                updateChart(salesList, selectedItem, maxQtyPastWeek)
             }
 
             // Load menu items into dropdown
@@ -90,7 +91,7 @@ class ReportActivity : NavActivity() {
         }
     }
 
-    private fun updateChart(salesList: List<SalesModel>, item: String) {
+    private fun updateChart(salesList: List<SalesModel>, item: String, maxQtyPastWeek: Int) {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val displayFormatter = DateTimeFormatter.ofPattern("MM-dd")
         val today = LocalDate.now()
@@ -120,7 +121,7 @@ class ReportActivity : NavActivity() {
 
         chart.axisLeft.apply {
             axisMinimum = 0f
-            axisMaximum = (quantities.maxOrNull() ?: 0 + 2).toFloat()
+            axisMaximum = if (maxQtyPastWeek <= 5) 5f else (maxQtyPastWeek + 2).toFloat()
         }
 
         chart.axisRight.isEnabled = false
@@ -150,7 +151,7 @@ class ReportActivity : NavActivity() {
     private fun getTop5ItemsFromLast7Days(salesData: Map<String, SalesModel>): List<String> {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val today = LocalDate.now()
-        val oneWeekAgo = today.minusDays(7)
+        val oneWeekAgo = today.minusDays(6)
 
         return salesData
             .filterKeys {
@@ -187,4 +188,22 @@ class ReportActivity : NavActivity() {
             }
         })
     }
+
+    private fun getMaxQuantityPast7Days(salesData: Map<String, SalesModel>): Int {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val today = LocalDate.now()
+        val oneWeekAgo = today.minusDays(7)
+
+        val last7Days = (6 downTo 0).map { today.minusDays(it.toLong()).format(formatter) }
+
+        var maxQty = 0
+        for (date in last7Days) {
+            val salesForDate = salesData[date]?.menu ?: continue
+            val maxForDate = salesForDate.values.maxOrNull() ?: 0
+            if (maxForDate > maxQty) maxQty = maxForDate
+        }
+
+        return maxQty
+    }
+
 }
