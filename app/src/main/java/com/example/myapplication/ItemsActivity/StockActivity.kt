@@ -163,6 +163,7 @@ class StockActivity : AppCompatActivity() {
                     )
                     ref.child(stockTitle).removeValue().addOnSuccessListener {
                         ref.child(newTitle).setValue(updatedStock)
+                        updateMenuItemsWithIngredientChanges(stockTitle, updatedStock)
                         Toast.makeText(this, "Title updated successfully", Toast.LENGTH_SHORT).show()
                         finish()
                     }.addOnFailureListener {
@@ -269,5 +270,32 @@ class StockActivity : AppCompatActivity() {
 
         tryGenerate()
     }
+    private fun updateMenuItemsWithIngredientChanges(oldTitle: String, updatedIngredient: StockModel) {
+        val uid = firebaseAuth.currentUser?.uid ?: return
+        val menuRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("menu")
+
+        menuRef.get().addOnSuccessListener { snapshot ->
+            for (menuItemSnapshot in snapshot.children) {
+                val ingredientsSnapshot = menuItemSnapshot.child("ingredients")
+                val ingredientsMap = ingredientsSnapshot.value as? Map<*, *> ?: continue
+
+                if (ingredientsMap.containsKey(oldTitle)) {
+                    val amountNeeded = ingredientsMap[oldTitle]
+                    val updatedIngredients = ingredientsMap.toMutableMap()
+
+                    // Add new key with old value, remove old key
+                    updatedIngredients[updatedIngredient.title] = amountNeeded
+                    updatedIngredients.remove(oldTitle)
+
+                    // Write updated map back
+                    menuRef.child(menuItemSnapshot.key!!).child("ingredients").setValue(updatedIngredients)
+                }
+            }
+        }.addOnFailureListener {
+            Log.e("StockActivity", "Failed to update menu ingredients: ${it.message}")
+        }
+    }
+
+
 
 }

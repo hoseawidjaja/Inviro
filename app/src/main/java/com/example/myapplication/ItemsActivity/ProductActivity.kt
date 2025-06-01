@@ -208,9 +208,11 @@ class ProductActivity : AppCompatActivity() {
                         title = newTitle
                     )
                     ref.child(productTitle).removeValue().addOnSuccessListener {
-                        ref.child(newTitle).setValue(updatedProduct)
-                        Toast.makeText(this, "Title updated successfully", Toast.LENGTH_SHORT).show()
-                        finish()
+                        ref.child(newTitle).setValue(updatedProduct).addOnSuccessListener {
+                            updateSalesWithMenuTitleChange(productTitle, newTitle)
+                            Toast.makeText(this, "Title updated successfully", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
                     }.addOnFailureListener {
                         Toast.makeText(this, "Failed to update title", Toast.LENGTH_SHORT).show()
                     }
@@ -510,6 +512,28 @@ class ProductActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun updateSalesWithMenuTitleChange(oldTitle: String, newTitle: String) {
+        val uid = firebaseAuth.currentUser?.uid ?: return
+        val salesRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("sales")
+
+        salesRef.get().addOnSuccessListener { snapshot ->
+            for (salesEntry in snapshot.children) {
+                val salesMap = salesEntry.value as? Map<*, *> ?: continue
+
+                if (salesMap.containsKey(oldTitle)) {
+                    val quantitySold = salesMap[oldTitle]
+
+                    val updatedSalesMap = salesMap.toMutableMap()
+                    updatedSalesMap.remove(oldTitle)
+                    updatedSalesMap[newTitle] = quantitySold
+
+                    salesRef.child(salesEntry.key!!).setValue(updatedSalesMap)
+                }
+            }
+        }.addOnFailureListener {
+            Log.e("ProductActivity", "Failed to update sales: ${it.message}")
+        }
+    }
 
 
 }
