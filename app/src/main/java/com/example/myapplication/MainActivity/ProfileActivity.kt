@@ -30,6 +30,7 @@ class ProfileActivity : NavActivity() {
     private lateinit var usersRef: DatabaseReference
     private lateinit var googleSignInClient: GoogleSignInClient
 
+
     // Display elements
     private lateinit var profileImage: ImageView
     private lateinit var usernameDisplay: TextView

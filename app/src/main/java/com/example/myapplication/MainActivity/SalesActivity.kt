@@ -22,6 +22,7 @@ import com.example.myapplication.R
 import com.example.myapplication.ViewModels.ProductModel
 import com.example.myapplication.ViewModels.SalesModel
 import com.example.myapplication.ViewModels.StockModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.util.Calendar
 
@@ -29,11 +30,13 @@ class SalesActivity : NavActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: SalesAdapter
     private val salesList = mutableListOf<SalesModel>()
+    private lateinit var firebaseAuth: FirebaseAuth
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sales_date_page)
+        firebaseAuth = FirebaseAuth.getInstance()
 
         val salesDateTextView = findViewById<TextView>(R.id.salesDate)
         val currentDate = java.text.SimpleDateFormat("EEEE, d MMMM yyyy", java.util.Locale.getDefault())
@@ -48,7 +51,9 @@ class SalesActivity : NavActivity() {
         recyclerView.adapter = adapter
 
         // Fetch sales data from Firebase
-        val databaseRef = FirebaseDatabase.getInstance().getReference("sales")
+
+        val uid = firebaseAuth.currentUser?.uid ?: return
+        val databaseRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("sales")
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 salesList.clear()
@@ -101,7 +106,9 @@ class SalesActivity : NavActivity() {
 
 // Load product list from Firebase or hardcode from your JSON
             val productList = mutableListOf<ProductModel>()
-            val productsRef = FirebaseDatabase.getInstance().getReference("menu")
+            val uid = firebaseAuth.currentUser?.uid ?: return@setOnClickListener
+            val ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("ingredients")
+            val productsRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("menu")
 
             productsRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -149,9 +156,11 @@ class SalesActivity : NavActivity() {
 
                 if (date.isNotEmpty() && menuItemName.isNotEmpty() && quantity > 0) {
                     val database = FirebaseDatabase.getInstance()
-                    val salesRef = database.getReference("sales")
-                    val menuRef = database.getReference("menu")
-                    val ingredientsRef = database.getReference("ingredients")
+                    val uid = firebaseAuth.currentUser?.uid ?: return@setOnClickListener
+                    val ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("ingredients")
+                    val salesRef = database.getReference("users").child(uid).child("sales")
+                    val menuRef = database.getReference("users").child(uid).child("menu")
+                    val ingredientsRef = database.getReference("users").child(uid).child("ingredients")
 
                     // Step 1: Record the sale
                     salesRef.child(date).child(menuItemName)

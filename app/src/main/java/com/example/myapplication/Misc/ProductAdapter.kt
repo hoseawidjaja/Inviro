@@ -16,6 +16,7 @@ import com.example.myapplication.ViewModels.ProductModel
 import com.example.myapplication.ViewModels.StockModel
 import com.example.myapplication.databinding.ModelProductBinding
 import com.example.myapplication.databinding.ModelStockBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 class ProductAdapter(
@@ -23,12 +24,14 @@ class ProductAdapter(
     private val onItemClick: (ProductModel) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
+    private lateinit var firebaseAuth: FirebaseAuth
     lateinit var context: Context
 
     class ProductViewHolder(val binding: ModelProductBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         context = parent.context
+        firebaseAuth = FirebaseAuth.getInstance()
         val binding = ModelProductBinding.inflate(LayoutInflater.from(context), parent, false)
         return ProductViewHolder(binding)
     }
@@ -62,7 +65,8 @@ class ProductAdapter(
                 .setTitle("Delete Ingredient")
                 .setMessage("Are you sure you want to delete this item? This action cannot be undone.")
                 .setPositiveButton("Delete") { dialog, _ ->
-                    val ref = FirebaseDatabase.getInstance().getReference("menu")
+                    val uid = firebaseAuth.currentUser?.uid ?: return@setPositiveButton
+                    val ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("menu")
                     val query = ref.orderByChild("id").equalTo(item.id)
 
                     query.get().addOnSuccessListener { snapshot ->

@@ -46,6 +46,7 @@ import java.io.InputStream
 import kotlin.math.log
 import com.bumptech.glide.request.target.Target
 import com.example.myapplication.Misc.StockAutoCompleteAdapter
+import com.google.firebase.auth.FirebaseAuth
 
 
 class ProductActivity : AppCompatActivity() {
@@ -58,7 +59,7 @@ class ProductActivity : AppCompatActivity() {
     private lateinit var stockAdapter: StockUsageAdapter
     private val stockList = mutableListOf<StockUsageModel>()
     private lateinit var addIngredientButton: Button
-
+    private lateinit var firebaseAuth: FirebaseAuth
 
     private lateinit var imagePreview: ImageView
     private var imageUri: Uri? = null
@@ -87,6 +88,7 @@ class ProductActivity : AppCompatActivity() {
         imagePreview = findViewById(R.id.imagePreview)
         stockRecyclerView = findViewById(R.id.ingredientsRecyclerView)
         stockRecyclerView.layoutManager = LinearLayoutManager(this)
+        firebaseAuth = FirebaseAuth.getInstance()
         stockAdapter = StockUsageAdapter(stockList, object : StockUsageAdapter.OnIngredientActionListener {
             override fun onDelete(position: Int) {
                 val ingredient = stockList[position]
@@ -172,7 +174,8 @@ class ProductActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val ref = FirebaseDatabase.getInstance().getReference("menu")
+            val uid = firebaseAuth.currentUser?.uid ?: return@setOnClickListener
+            val ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("menu")
 
             if (productId.isEmpty()) {
                 // Asynchronously generate unique ID
@@ -304,7 +307,8 @@ class ProductActivity : AppCompatActivity() {
     // Function to generate an 8-character alphanumeric ID
     private fun generateUniqueId(callback: (String) -> Unit) {
         val charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        val ref = FirebaseDatabase.getInstance().getReference("menu") // or "menu", depending on your use case
+        val uid = firebaseAuth.currentUser?.uid ?: return
+        val ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("menu") // or "menu", depending on your use case
 
         fun tryGenerate() {
             val newId = (1..8)
@@ -331,8 +335,9 @@ class ProductActivity : AppCompatActivity() {
     }
 
     private fun loadStockUsedInProduct(productTitle: String) {
-        val menuRef = FirebaseDatabase.getInstance().getReference("menu").child(productTitle)
-        val stockRef = FirebaseDatabase.getInstance().getReference("ingredients")
+        val uid = firebaseAuth.currentUser?.uid ?: return
+        val menuRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("menu").child(productTitle)
+        val stockRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("ingredients")
 
         menuRef.child("ingredients").get()
             .addOnSuccessListener { ingredientsSnapshot ->
@@ -379,7 +384,8 @@ class ProductActivity : AppCompatActivity() {
         val ingredientInput = inputLayout.findViewById<AutoCompleteTextView>(R.id.ingredientNameEditText)
         val amountInput = inputLayout.findViewById<EditText>(R.id.amountEditText)
 
-        val ingredientsRef = FirebaseDatabase.getInstance().getReference("ingredients")
+        val uid = firebaseAuth.currentUser?.uid ?: return
+        val ingredientsRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("ingredients")
 
         ingredientsRef.get().addOnSuccessListener { snapshot ->
             val stockList = snapshot.children.mapNotNull { child ->

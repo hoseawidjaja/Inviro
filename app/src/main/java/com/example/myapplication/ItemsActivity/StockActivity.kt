@@ -18,6 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.myapplication.Misc.SupabaseClient
 import com.example.myapplication.R
 import com.example.myapplication.ViewModels.StockModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 //import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
@@ -39,6 +40,7 @@ class StockActivity : AppCompatActivity() {
     private lateinit var backButton: ImageView
     private lateinit var uploadImageButton: Button
     private lateinit var deleteButton: Button
+    private lateinit var firebaseAuth: FirebaseAuth
 
     private lateinit var imagePreview: ImageView
     private var imageUri: Uri? = null
@@ -69,6 +71,7 @@ class StockActivity : AppCompatActivity() {
         backButton = findViewById(R.id.backButton)
         uploadImageButton = findViewById(R.id.uploadImageButton)
         imagePreview = findViewById(R.id.imagePreview)
+        firebaseAuth = FirebaseAuth.getInstance()
 
         // Set up the unit spinner with the array from resources
         ArrayAdapter.createFromResource(
@@ -125,7 +128,8 @@ class StockActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val ref = FirebaseDatabase.getInstance().getReference("ingredients")
+            val uid = firebaseAuth.currentUser?.uid ?: return@setOnClickListener
+            val ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("ingredients")
 
             if (stockId.isEmpty()) {
                 // Generate unique ID asynchronously
@@ -239,7 +243,8 @@ class StockActivity : AppCompatActivity() {
     // Function to generate an 8-character alphanumeric ID
     private fun generateUniqueId(callback: (String) -> Unit) {
         val charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        val ref = FirebaseDatabase.getInstance().getReference("ingredients") // or "menu", depending on your use case
+        val uid = firebaseAuth.currentUser?.uid ?: return
+        val ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("ingredients") // or "menu", depending on your use case
 
         fun tryGenerate() {
             val newId = (1..8)

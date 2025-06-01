@@ -7,11 +7,13 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 class StockModelActivity : AppCompatActivity() {
     private lateinit var deleteButton: ImageButton
     private var stockId: String = ""
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,6 +22,7 @@ class StockModelActivity : AppCompatActivity() {
         // Get stockId passed from previous activity
         stockId = intent.getStringExtra("stock_id") ?: ""
         Log.d("StockModelActivity", "Stock ID received: $stockId")
+        firebaseAuth = FirebaseAuth.getInstance()
 
         deleteButton = findViewById(R.id.deleteButton)
         if (deleteButton == null) {
@@ -29,7 +32,8 @@ class StockModelActivity : AppCompatActivity() {
         }
 
         deleteButton.setOnClickListener {
-            val ref = FirebaseDatabase.getInstance().getReference("ingredients")
+            val uid = firebaseAuth.currentUser?.uid ?: return@setOnClickListener
+            val ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("ingredients")
 
             val query = ref.orderByChild("id").equalTo(stockId)
 

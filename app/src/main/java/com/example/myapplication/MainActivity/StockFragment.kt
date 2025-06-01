@@ -13,6 +13,7 @@ import com.example.myapplication.ItemsActivity.StockActivity
 import com.example.myapplication.Misc.StockAdapter
 import com.example.myapplication.R
 import com.example.myapplication.ViewModels.StockModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 class StockFragment : Fragment() {
@@ -20,6 +21,7 @@ class StockFragment : Fragment() {
     private lateinit var adapter: StockAdapter
     private val stockList = mutableListOf<StockModel>()
     private lateinit var addButton: ImageView
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +31,7 @@ class StockFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.views)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        firebaseAuth = FirebaseAuth.getInstance()
 
         adapter = StockAdapter(stockList) { selectedStock ->
             val intent = Intent(requireContext(), StockActivity::class.java)
@@ -48,7 +51,8 @@ class StockFragment : Fragment() {
             startActivity(intent)
         }
 
-        val databaseRef = FirebaseDatabase.getInstance().getReference("ingredients")
+        val uid = firebaseAuth.currentUser?.uid ?: return null
+        val databaseRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("ingredients")
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 stockList.clear()
