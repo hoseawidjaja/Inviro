@@ -1,24 +1,26 @@
 package com.example.myapplication.Misc
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.example.myapplication.MainActivity.HomeActivity
 import com.example.myapplication.R
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.*
 
 class SignupTabFragment : Fragment() {
 
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private val RC_SIGN_IN = 9001
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,10 +58,7 @@ class SignupTabFragment : Fragment() {
             firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(requireContext(), "Signup successful", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(requireActivity(), HomeActivity::class.java)
-                        startActivity(intent)
-                        requireActivity().finish()
+                        startHomeActivity()
                     } else {
                         val errorMessage = when (val exception = task.exception) {
                             is FirebaseAuthWeakPasswordException -> "Weak password: ${exception.reason}"
@@ -72,5 +71,12 @@ class SignupTabFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun startHomeActivity() {
+        Toast.makeText(requireContext(), "Signup successful", Toast.LENGTH_SHORT).show()
+        val intent = Intent(requireActivity(), HomeActivity::class.java)
+        startActivity(intent)
+        requireActivity().finish()
     }
 }
