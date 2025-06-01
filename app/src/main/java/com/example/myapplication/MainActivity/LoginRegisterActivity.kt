@@ -24,7 +24,7 @@ class LoginRegisterActivity : AppCompatActivity() {
             finish()
             return
         }
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_login_register)
 
         tabLayout = findViewById(R.id.tab_layout)
         viewPager2 = findViewById(R.id.view_pager)

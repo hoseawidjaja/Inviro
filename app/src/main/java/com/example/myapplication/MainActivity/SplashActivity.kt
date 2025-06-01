@@ -43,7 +43,7 @@ class SplashActivity : AppCompatActivity() {
         }
 
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, LoginRegisterActivity::class.java)
             startActivity(intent)
             finish()
         }, splashTime)
