@@ -23,9 +23,11 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_add"
+        android:background="@drawable/rounded_background_white"
+        android:backgroundTint="@color/light_cream"
         android:contentDescription="Add Stock"
-        android:background="@color/light_cream"
+        android:src="@drawable/ic_add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>

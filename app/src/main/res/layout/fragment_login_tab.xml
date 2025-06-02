@@ -26,16 +26,18 @@
                 android:src="@drawable/loginimg"/>
 
             <EditText
+                android:id="@+id/etEmail"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:id="@+id/etEmail"
                 android:layout_marginTop="30dp"
-                android:padding="8dp"
-                android:hint="Email"
+                android:background="@drawable/editext_bkg"
                 android:drawableLeft="@drawable/baseline_email_24"
                 android:drawablePadding="8dp"
-                android:background="@drawable/editext_bkg"/>
+                android:drawableTint="@color/light_cream"
+                android:hint="Email"
+                android:padding="8dp"
+                android:textColorLink="@color/light_cream" />
 
             <EditText
                 android:layout_width="300dp"
@@ -47,20 +49,22 @@
                 android:textColor="@color/black"
                 android:hint="Password"
                 android:inputType="textPassword"
+                android:drawableTint="@color/light_cream"
                 android:drawableLeft="@drawable/baseline_lock_24"
                 android:drawablePadding="8dp"
                 android:background="@drawable/editext_bkg"/>
 
 
             <Button
+                android:id="@+id/btnLogin"
                 android:layout_width="300dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp"
-                android:id="@+id/btnLogin"
-                android:textSize="18sp"
+                android:backgroundTint="@color/light_cream"
                 android:text="Login"
-                app:cornerRadius = "30dp"/>
+                android:textSize="18sp"
+                app:cornerRadius="30dp" />
 
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/btnGoogleSignIn"

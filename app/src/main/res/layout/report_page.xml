@@ -49,14 +49,6 @@
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/export_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:backgroundTint="@color/main_green"
-                    android:text="Export"
-                    android:textAllCaps="false"
-                    android:textColor="@color/light_cream" />
             </LinearLayout>
 
             <!-- Date Range Selection -->
