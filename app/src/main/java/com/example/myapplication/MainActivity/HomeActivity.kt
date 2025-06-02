@@ -181,7 +181,7 @@ class HomeActivity : NavActivity() {
         }
 
         manageButton.setOnClickListener {
-            startActivity(Intent(this, StockActivity::class.java))
+            startActivity(Intent(this, ManagementActivity::class.java))
             dialog.dismiss()
         }
 
