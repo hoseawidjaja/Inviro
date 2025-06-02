@@ -44,6 +44,7 @@
                 android:id="@+id/etPassword"
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
+                android:textColor="@color/black"
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:drawableLeft="@drawable/baseline_lock_24"

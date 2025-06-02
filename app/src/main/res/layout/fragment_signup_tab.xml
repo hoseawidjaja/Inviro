@@ -59,7 +59,7 @@
                 android:padding="8dp"
                 android:hint="Confirm Password"
                 android:inputType="textPassword"
-                android:drawableLeft="@drawable/baseline_article_24"
+                android:drawableLeft="@drawable/baseline_password_24"
                 android:drawablePadding="8dp"
                 android:background="@drawable/editext_bkg"/>
 

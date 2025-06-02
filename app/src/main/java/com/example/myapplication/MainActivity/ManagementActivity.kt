@@ -48,6 +48,6 @@ class ManagementActivity : NavActivity() {
         btnStock.setColorFilter(Color.DKGRAY)
 
         // Highlight selected
-        selected.setColorFilter(resources.getColor(R.color.teal_200, theme)) // or any highlight color
+        selected.setColorFilter(resources.getColor(R.color.lavender, theme)) // or any highlight color
     }
 }

@@ -38,9 +38,12 @@ class ItemAdapter(
 
         // Optional: highlight selected item visually
         if (items[position] == selectedItem) {
-            holder.name.setBackgroundColor(0xFFE0E0E0.toInt()) // light gray
+//            holder.name.setBackgroundColor(0xFF8692F7.toInt()) // lavender
+            holder.name.setTextColor(0xFF1171FF.toInt())
         } else {
-            holder.name.setBackgroundColor(0x00000000) // transparent
+//            holder.name.setBackgroundColor(0x00000000) // transparent
+            holder.name.setTextColor(0xFF000000.toInt())
+
         }
     }
 
