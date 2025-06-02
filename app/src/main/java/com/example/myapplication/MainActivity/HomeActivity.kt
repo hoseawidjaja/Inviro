@@ -159,22 +159,73 @@ class HomeActivity : NavActivity() {
 
     private fun showStockStatusPopup(statusMap: Map<String, String>) {
         val criticalItems = statusMap.filterValues { it == "critical" }.keys.toList()
-        if (criticalItems.isEmpty()) {
-            Toast.makeText(this, "No critical stock items.", Toast.LENGTH_SHORT).show()
+        val attentionItems = statusMap.filterValues { it == "need attention" }.keys.toList()
+        val goodItems = statusMap.filterValues { it == "good" }.keys.toList()
+
+        // Lists and labels in order
+        val stockLists = listOf(criticalItems, attentionItems, goodItems)
+        val stockLabels = listOf("Critical", "Need Attention", "Good")
+        val stockIndicators = listOf(R.drawable.circle_red, R.drawable.circle_yellow, R.drawable.circle_green)
+
+        if (criticalItems.isEmpty() && attentionItems.isEmpty() && goodItems.isEmpty()) {
+            Toast.makeText(this, "No stock items to show.", Toast.LENGTH_SHORT).show()
             return
         }
+
+        var currentStatus = 0
 
         val dialogView = layoutInflater.inflate(R.layout.stock_status_block, null)
         val recyclerView = dialogView.findViewById<RecyclerView>(R.id.critical_list)
         val closeButton = dialogView.findViewById<ImageButton>(R.id.back_button)
         val manageButton = dialogView.findViewById<Button>(R.id.go_to_stock)
+        val nameLabel = dialogView.findViewById<TextView>(R.id.name_label)
+        val indicator = dialogView.findViewById<View>(R.id.critical_indicator)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = CriticalItemAdapter(criticalItems)
+        val adapter = CriticalItemAdapter(stockLists[currentStatus])
+        recyclerView.adapter = adapter
 
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .create()
+
+        // Helper function to update UI based on current status
+        fun updateStockDisplay() {
+            adapter.updateData(stockLists[currentStatus])
+            nameLabel.text = stockLabels[currentStatus]
+            indicator.setBackgroundResource(stockIndicators[currentStatus])
+        }
+
+        // GestureDetector for swipe left/right
+        val gestureDetector = android.view.GestureDetector(this, object : android.view.GestureDetector.SimpleOnGestureListener() {
+            private val SWIPE_THRESHOLD = 100
+            private val SWIPE_VELOCITY_THRESHOLD = 100
+
+            override fun onFling(e1: android.view.MotionEvent?, e2: android.view.MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                if (e1 == null || e2 == null) return false
+                val diffX = e2.x - e1.x
+                val diffY = e2.y - e1.y
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffX > 0) {
+                            // Swipe right - previous status
+                            currentStatus = if (currentStatus - 1 < 0) stockLists.size - 1 else currentStatus - 1
+                        } else {
+                            // Swipe left - next status
+                            currentStatus = (currentStatus + 1) % stockLists.size
+                        }
+                        updateStockDisplay()
+                        return true
+                    }
+                }
+                return false
+            }
+        })
+
+        dialogView.setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            true
+        }
 
         closeButton.setOnClickListener {
             dialog.dismiss()
@@ -185,8 +236,10 @@ class HomeActivity : NavActivity() {
             dialog.dismiss()
         }
 
+        updateStockDisplay()
         dialog.show()
     }
+
 
 
     fun gotoReport(){

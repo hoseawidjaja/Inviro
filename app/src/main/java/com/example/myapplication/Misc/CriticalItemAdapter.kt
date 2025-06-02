@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class CriticalItemAdapter(private val items: List<String>) :
+class CriticalItemAdapter(private var items: List<String>) :
     RecyclerView.Adapter<CriticalItemAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -25,4 +25,10 @@ class CriticalItemAdapter(private val items: List<String>) :
     }
 
     override fun getItemCount(): Int = items.size
+
+    // Add this method to update items and refresh the list
+    fun updateData(newItems: List<String>) {
+        items = newItems
+        notifyDataSetChanged()
+    }
 }
