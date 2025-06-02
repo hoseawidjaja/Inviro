@@ -1,14 +1,21 @@
 package com.example.myapplication.MainActivity
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.ItemsActivity.StockActivity
+import com.example.myapplication.Misc.CriticalItemAdapter
 import com.example.myapplication.Misc.NavActivity
 import com.example.myapplication.R
 import com.github.mikephil.charting.charts.BarChart
@@ -27,11 +34,17 @@ class HomeActivity : NavActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var barChart: BarChart
     private lateinit var btnMore: Button
+    private var latestStatusMap: Map<String, String> = emptyMap()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.home_page)
+
+        findViewById<View>(R.id.stocks_status_card).setOnClickListener {
+            showStockStatusPopup(latestStatusMap)
+        }
 
         database = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
@@ -42,7 +55,9 @@ class HomeActivity : NavActivity() {
             val userId = currentUser.uid
             loadWeeklyMenuSales(userId) { menuSales ->
                 updateMenuBarChart(menuSales)
+                updateSalesStats(menuSales)
             }
+
         }
 
         fetchDataAndCalculateStatus()
@@ -124,12 +139,55 @@ class HomeActivity : NavActivity() {
 
 
     private fun displayStatuses(statusMap: Map<String, String>) {
-        // For example, you could display in a RecyclerView or logs here
+        latestStatusMap = statusMap
+
+        val criticalCount = statusMap.count { it.value == "critical" }
+        val attentionCount = statusMap.count { it.value == "need attention" }
+        val goodCount = statusMap.count { it.value == "good" }
+
+        findViewById<TextView>(R.id.critical_text).text = "$criticalCount items"
+        findViewById<TextView>(R.id.attention_text).text = "$attentionCount items"
+        findViewById<TextView>(R.id.good_text).text = "$goodCount items"
+
+        // Optional: log each item for debugging
         statusMap.forEach { (ingredient, status) ->
             Log.d("IngredientStatus", "$ingredient: $status")
-            // TODO: Update your UI components to show these statuses
         }
     }
+
+
+
+    private fun showStockStatusPopup(statusMap: Map<String, String>) {
+        val criticalItems = statusMap.filterValues { it == "critical" }.keys.toList()
+        if (criticalItems.isEmpty()) {
+            Toast.makeText(this, "No critical stock items.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val dialogView = layoutInflater.inflate(R.layout.stock_status_block, null)
+        val recyclerView = dialogView.findViewById<RecyclerView>(R.id.critical_list)
+        val closeButton = dialogView.findViewById<ImageButton>(R.id.back_button)
+        val manageButton = dialogView.findViewById<Button>(R.id.go_to_stock)
+
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = CriticalItemAdapter(criticalItems)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        closeButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        manageButton.setOnClickListener {
+            startActivity(Intent(this, StockActivity::class.java))
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
 
     fun gotoReport(){
         btnMore = findViewById(R.id.sales_detail_button)
@@ -223,5 +281,14 @@ class HomeActivity : NavActivity() {
 
         barChart.invalidate()
     }
+
+    private fun updateSalesStats(menuSales: Map<String, Int>) {
+        val itemsSold = menuSales.values.sum()
+        val menusSold = menuSales.size
+
+        findViewById<TextView>(R.id.items_sold_count).text = "$itemsSold items"
+        findViewById<TextView>(R.id.menu_sold_count).text = "$menusSold menus"
+    }
+
 
 }

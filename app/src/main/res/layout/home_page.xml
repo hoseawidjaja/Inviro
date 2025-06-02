@@ -198,12 +198,12 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Today's Revenue"
+                                    android:text="Menu sold"
                                     android:textColor="@color/light_cream"
                                     android:textSize="12sp" />
 
                                 <TextView
-                                    android:id="@+id/revenue_amount"
+                                    android:id="@+id/menu_sold_count"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Rp 1.500.000,00"
