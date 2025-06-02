@@ -28,7 +28,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Stock"
         android:src="@drawable/ic_grid"
-        android:tint="@android:color/black"
+        android:backgroundTint="@android:color/black"
         app:layout_constraintBottom_toTopOf="@id/fragment_container"
         app:layout_constraintStart_toStartOf="@id/guideline25"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,7 +41,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Product"
         android:src="@drawable/ic_document"
-        android:tint="@android:color/black"
+        android:backgroundTint="@android:color/black"
         app:layout_constraintBottom_toTopOf="@id/fragment_container"
         app:layout_constraintStart_toStartOf="@id/guideline75"
         app:layout_constraintTop_toTopOf="parent" />

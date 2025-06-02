@@ -44,8 +44,8 @@ class ManagementActivity : NavActivity() {
 
     private fun highlightButton(selected: ImageButton) {
         // Reset both first
-        btnProduct.setColorFilter(Color.WHITE)
-        btnStock.setColorFilter(Color.WHITE)
+        btnProduct.setColorFilter(Color.DKGRAY)
+        btnStock.setColorFilter(Color.DKGRAY)
 
         // Highlight selected
         selected.setColorFilter(resources.getColor(R.color.teal_200, theme)) // or any highlight color
