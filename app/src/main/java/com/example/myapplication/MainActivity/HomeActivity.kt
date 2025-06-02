@@ -4,8 +4,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
+import com.example.myapplication.ItemsActivity.StockActivity
 import com.example.myapplication.Misc.NavActivity
 import com.example.myapplication.R
 import com.github.mikephil.charting.charts.BarChart
@@ -23,6 +26,7 @@ class HomeActivity : NavActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private lateinit var barChart: BarChart
+    private lateinit var btnMore: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +45,9 @@ class HomeActivity : NavActivity() {
             }
         }
 
-
         fetchDataAndCalculateStatus()
         gotoNotifs()
+        gotoReport()
     }
 
     private fun fetchDataAndCalculateStatus() {
@@ -124,6 +128,14 @@ class HomeActivity : NavActivity() {
         statusMap.forEach { (ingredient, status) ->
             Log.d("IngredientStatus", "$ingredient: $status")
             // TODO: Update your UI components to show these statuses
+        }
+    }
+
+    fun gotoReport(){
+        btnMore = findViewById(R.id.sales_detail_button)
+        btnMore.setOnClickListener{
+            startActivity(Intent(this, ReportActivity::class.java))
+            finish()
         }
     }
 
