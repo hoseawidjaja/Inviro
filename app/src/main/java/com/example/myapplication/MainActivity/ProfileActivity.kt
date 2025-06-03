@@ -221,7 +221,6 @@ class ProfileActivity : NavActivity() {
     }
 
     private fun saveProfile() {
-        // Validate input
         val username = usernameEt.text.toString().trim()
         val phone = phoneEt.text.toString().trim()
         val address = addressEt.text.toString().trim()
@@ -239,41 +238,40 @@ class ProfileActivity : NavActivity() {
             return
         }
 
-        // Create updated profile (preserve original email and profileImage)
-        val updatedProfile = originalData.copy(
-            username = username,
-            phone = phone,
-            address = address,
-            dob = dob
+        // Only update specific fields
+        val updates = mapOf<String, Any?>(
+            "username" to username,
+            "phone" to phone,
+            "address" to address,
+            "dob" to dob
         )
 
-        // Show loading state
         saveButton.isEnabled = false
         saveButton.text = "Saving..."
 
-        Log.d("ProfileActivity", "Attempting to save profile: $updatedProfile")
-
-        usersRef.child(uid).setValue(updatedProfile)
+        usersRef.child(uid).updateChildren(updates)
             .addOnSuccessListener {
-                Log.d("ProfileActivity", "Profile saved successfully")
                 Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
-                originalData = updatedProfile
-                updateUI(updatedProfile)
+                originalData = originalData.copy(
+                    username = username,
+                    phone = phone,
+                    address = address,
+                    dob = dob
+                )
+                updateUI(originalData)
                 toggleEditing(false)
 
-                // Restore button state
                 saveButton.isEnabled = true
                 saveButton.text = "Save"
             }
             .addOnFailureListener { exception ->
-                Log.e("ProfileActivity", "Failed to save profile", exception)
                 Toast.makeText(this, "Failed to update profile: ${exception.message}", Toast.LENGTH_LONG).show()
 
-                // Restore button state
                 saveButton.isEnabled = true
                 saveButton.text = "Save"
             }
     }
+
 
     private fun toggleEditing(enabled: Boolean) {
         // Enable/disable form fields (except email which is always disabled)
