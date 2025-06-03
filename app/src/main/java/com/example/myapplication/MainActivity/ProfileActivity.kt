@@ -2,6 +2,7 @@ package com.example.myapplication.MainActivity
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -23,6 +24,16 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import android.util.Log
 import com.bumptech.glide.Glide
+import com.example.myapplication.Misc.SupabaseClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import androidx.activity.result.contract.ActivityResultContracts
+
 
 class ProfileActivity : NavActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
@@ -30,6 +41,9 @@ class ProfileActivity : NavActivity() {
     private lateinit var usersRef: DatabaseReference
     private lateinit var googleSignInClient: GoogleSignInClient
 
+    private lateinit var uploadProfileImageButton: Button
+    private var profileImageUri: Uri? = null
+    private var isEditing = false
 
     // Display elements
     private lateinit var profileImage: ImageView
@@ -54,6 +68,14 @@ class ProfileActivity : NavActivity() {
 
     private lateinit var originalData: UserProfileModel
 
+    private val profileImagePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            profileImageUri = uri
+            Glide.with(this).load(uri).into(profileImage)
+            uploadProfileImageToSupabase(uri)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.profile_page)
@@ -76,6 +98,14 @@ class ProfileActivity : NavActivity() {
         phoneDisplay = findViewById(R.id.phone)
         addressDisplay = findViewById(R.id.address)
         dobDisplay = findViewById(R.id.dob)
+
+        uploadProfileImageButton = findViewById(R.id.upload_profile_image_button)
+
+
+        // Hide button initially
+        uploadProfileImageButton.visibility = View.GONE
+
+        // If editing an existing stock item (stockId not empty), show the button
 
         // Edit form elements
         usernameEt = findViewById(R.id.username_edit_text)
@@ -106,6 +136,9 @@ class ProfileActivity : NavActivity() {
     private fun setupClickListeners() {
         editButton.setOnClickListener {
             toggleEditing(true)
+        }
+        uploadProfileImageButton.setOnClickListener {
+            profileImagePicker.launch("image/*")
         }
 
         saveButton.setOnClickListener {
@@ -281,6 +314,8 @@ class ProfileActivity : NavActivity() {
         dobEt.isEnabled = enabled
         emailEt.isEnabled = false // Always disabled
 
+        uploadProfileImageButton.visibility = if(enabled) View.VISIBLE else View.GONE
+
         // Toggle button visibility
         editButton.visibility = if (enabled) View.GONE else View.VISIBLE
         saveButton.visibility = if (enabled) View.VISIBLE else View.GONE
@@ -314,4 +349,54 @@ class ProfileActivity : NavActivity() {
         startActivity(intent)
         finish()
     }
+
+    private fun uriToFile(uri: Uri): File? {
+        val inputStream: InputStream? = contentResolver.openInputStream(uri)
+        val file = File(cacheDir, "profile_image_${System.currentTimeMillis()}.jpg")
+        return try {
+            val outputStream = FileOutputStream(file)
+            inputStream?.copyTo(outputStream)
+            outputStream.close()
+            inputStream?.close()
+            file
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun uploadProfileImageToSupabase(uri: Uri) {
+        val file = uriToFile(uri) ?: run {
+            Toast.makeText(this, "Failed to read image file", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val uploadPath = "profile_images/IMG_${System.currentTimeMillis()}.jpg"
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val imageUrl = SupabaseClient.uploadImage(this@ProfileActivity, file, uploadPath)
+
+                val uid = firebaseAuth.currentUser?.uid ?: return@launch
+                usersRef.child(uid).child("profileImage").setValue(imageUrl)
+                    .addOnSuccessListener {
+                        Glide.with(this@ProfileActivity)
+                            .load(imageUrl)
+                            .override(512, 512)
+                            .placeholder(R.drawable.ic_image_ingredient_placeholder)
+                            .error(R.drawable.ic_image_ingredient_placeholder)
+                            .into(profileImage)
+                        Toast.makeText(this@ProfileActivity, "Profile image updated!", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this@ProfileActivity, "Failed to save image URL", Toast.LENGTH_SHORT).show()
+                    }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@ProfileActivity, "Upload failed: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
 }

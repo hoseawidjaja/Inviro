@@ -60,6 +60,17 @@
                     android:text="john@example.com"
                     android:textSize="14sp" />
 
+                <Button
+                    android:id="@+id/upload_profile_image_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upload Photo"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/main_green"
+                    android:textColor="@color/light_cream"
+                    android:visibility="gone"/>
+
                 <!-- Edit Button -->
                 <Button
                     android:id="@+id/edit_profile_button"
