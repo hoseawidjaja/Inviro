@@ -129,8 +129,10 @@
 
                             <com.github.mikephil.charting.charts.BarChart
                                 android:id="@+id/menuBarChart"
-                                android:layout_width="500dp"
-                                android:layout_height="300dp"/>
+                                android:layout_width="match_parent"
+                                android:layout_height="300dp"
+                                android:minWidth="0dp"
+                                android:maxWidth="500dp"/>
                         </LinearLayout>
                     </HorizontalScrollView>
 

@@ -317,7 +317,7 @@ class HomeActivity : NavActivity() {
             granularity = 1f
             labelCount = labels.size
             setDrawLabels(true)
-            labelRotationAngle = 0f      // ⬅ Keep labels horizontal
+            labelRotationAngle = -15f      // ⬅ Keep labels horizontal
             textSize = 9f                // ⬅ Slightly smaller text
             position = com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM
             setAvoidFirstLastClipping(true)
@@ -327,7 +327,7 @@ class HomeActivity : NavActivity() {
             axisMaximum = labels.size - 0.5f
         }
 
-
+        barChart.setExtraOffsets(0f, 0f, 0f, 16f)
         barChart.axisLeft.axisMinimum = 0f
         barChart.axisRight.isEnabled = false
         barChart.description.isEnabled = false

@@ -303,7 +303,7 @@ class ReportActivity : NavActivity() {
             granularity = 1f
             labelCount = labels.size
             setDrawLabels(true)
-            labelRotationAngle = 0f
+            labelRotationAngle = -15f
             textSize = 9f
             position = com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM
             setAvoidFirstLastClipping(true)
