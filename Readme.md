@@ -1,4 +1,4 @@
-# Inviro
+# Inviro : Smart Stock Management App for F&B Businesses
 
 ## 📚 Overview
 **Inviro** is a versatile developer tool designed to accelerate **Android app development** by integrating real-time data management, secure authentication, and a modular architecture.  
